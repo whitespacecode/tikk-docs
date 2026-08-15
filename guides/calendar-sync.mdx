@@ -1,0 +1,60 @@
+---
+title: "Connect your calendars"
+sidebarTitle: "Calendar sync"
+description: "Sync Google Calendar, Outlook, Apple iCloud or any iCal feed. Every connected calendar is checked before a slot is shown."
+---
+
+Tikk reads every connected calendar before showing slots. A busy event on any calendar (a dentist, a blocked focus hour, an existing call) removes that slot from your booking page. Nothing to configure per event. Protection is always on.
+
+## Supported calendars
+
+<CardGroup cols={2}>
+  <Card title="Google Calendar" icon="google">
+    Connect one or more Google accounts. Tikk checks all selected calendars in real time.
+  </Card>
+
+  <Card title="Microsoft Outlook" icon="microsoft">
+    Works with personal Microsoft accounts and Microsoft 365 work or school accounts.
+  </Card>
+
+  <Card title="Apple iCloud" icon="apple">
+    Connect using an app-specific password from your Apple ID settings.
+  </Card>
+
+  <Card title="iCal feed" icon="calendar">
+    Paste any valid iCal feed URL. Fastmail, Proton Calendar, Airbnb or anything that publishes an `.ics` feed.
+  </Card>
+</CardGroup>
+
+## Connect a calendar
+
+<Steps>
+  <Step title="Open Settings → Calendars">
+    In your dashboard, click your avatar and select **Settings**. Choose **Calendars** from the left menu.
+  </Step>
+  <Step title="Click Add Calendar and pick a provider">
+    Choose Google, Outlook, Apple iCloud or iCal feed.
+  </Step>
+  <Step title="Authorize Tikk">
+    Complete the OAuth flow or paste your credentials. Tikk requests **read and write** access. Read checks your availability; write adds confirmed bookings to your primary calendar.
+  </Step>
+  <Step title="Repeat for each calendar">
+    Connect as many as you need. Tikk checks all of them at once when computing availability.
+  </Step>
+</Steps>
+
+<Note>
+  Free supports **1 calendar**. Upgrade to Pro for unlimited connections.
+</Note>
+
+## How it works
+
+Once calendars are connected, Tikk checks all of them in real time whenever someone loads your booking page. Any overlap with any event (even one minute) hides the slot. No manual sync, no refresh, no polling delay.
+
+<Tip>
+  Connect your personal calendar too, even if you only take work bookings. Personal event details stay private. Only the busy times block slots.
+</Tip>
+
+## Calendar write-back
+
+When a booking is confirmed, Tikk adds an event to your **primary calendar**. It includes the meeting title, the booker's name and the auto-generated meeting link (Google Meet, Teams or Jitsi). Nothing to copy over.

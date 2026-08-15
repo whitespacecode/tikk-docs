@@ -1,0 +1,121 @@
+---
+title: "GET /profile. Retrieve your public profile and services"
+sidebarTitle: "GET /profile"
+description: "Fetch your public profile. Username, bio, avatar and all active services with slugs and embed URLs, in one request."
+---
+
+The `/profile` endpoint returns everything that makes up your public Tikk presence: your handle, display name, bio, branding assets, and the full list of services you have published. Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
+
+## Endpoint
+
+```
+GET https://app.tikk.chat/api/v1/profile
+```
+
+**Required scope:** `profile.read`
+
+## Example request
+
+```bash
+curl https://app.tikk.chat/api/v1/profile \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Request parameters
+
+This endpoint accepts no query parameters.
+
+## Response schema
+
+<ResponseField name="username" type="string | null">
+  Your Tikk handle. Use this as the `data-domain` value in the embed script. `null` until you claim a username.
+</ResponseField>
+
+<ResponseField name="name" type="string | null">
+  Your display name, shown at the top of your booking page.
+</ResponseField>
+
+<ResponseField name="title" type="string | null">
+  Your job title, displayed beneath your name on the booking page.
+</ResponseField>
+
+<ResponseField name="bio" type="string | null">
+  Short bio visible to anyone who opens your booking page.
+</ResponseField>
+
+<ResponseField name="avatar_url" type="string | null">
+  Fully-qualified URI of your profile photo.
+</ResponseField>
+
+<ResponseField name="logo_url" type="string | null">
+  Fully-qualified URI of your brand logo. `null` if you have not uploaded one.
+</ResponseField>
+
+<ResponseField name="profile_url" type="string | null">
+  Direct link to your public booking page (e.g. `https://tikk.chat/joeri`). `null` until you pick a username.
+</ResponseField>
+
+<ResponseField name="profile_complete" type="boolean">
+  Whether your profile is ready to receive bookings. `false` while no username has been claimed.
+</ResponseField>
+
+<ResponseField name="services" type="array">
+  All active services published on your profile.
+
+  <Expandable title="ProfileService">
+    <ResponseField name="slug" type="string">
+      URL-safe identifier for the service. Pass this as the `service` query parameter on `/availability`.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Human-readable service name shown on the booking page.
+    </ResponseField>
+
+    <ResponseField name="embed_url" type="string | null">
+      Fully-qualified booking URL for this service (e.g. `https://tikk.chat/joeri/discovery-call`). `null` until you pick a username.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "username": "joeri",
+  "name": "Joeri Verstraete",
+  "title": "Founder",
+  "bio": "I help teams ship faster.",
+  "avatar_url": "https://app.tikk.chat/avatars/joeri.jpg",
+  "logo_url": null,
+  "profile_url": "https://tikk.chat/joeri",
+  "profile_complete": true,
+  "services": [
+    {
+      "slug": "discovery-call",
+      "title": "Discovery call",
+      "embed_url": "https://tikk.chat/joeri/discovery-call"
+    },
+    {
+      "slug": "strategy-session",
+      "title": "Strategy session",
+      "embed_url": "https://tikk.chat/joeri/strategy-session"
+    }
+  ]
+}
+```
+
+<Note>
+  Use the `username` field as the `data-domain` attribute in the Tikk embed script to surface your booking page inline on any website. See the [embed guide](/embed) for the full setup instructions.
+</Note>
+
+<Note>
+  `profile_complete` is `false` and both `profile_url` and all `embed_url` values are `null` until you claim a username in your Tikk account settings. Bookings cannot be received while `profile_complete` is `false`.
+</Note>
+
+## Errors
+
+| Status | Meaning |
+|--------|---------|
+| `401` | Missing or invalid API key. |
+| `403` | Your API key does not have the `profile.read` scope. |
+| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

@@ -1,0 +1,78 @@
+---
+title: "Services"
+sidebarTitle: "Services"
+description: "A service is a bookable offering on your profile. Configure types, slugs, pricing and availability."
+---
+
+A service is a bookable offering on your profile. A discovery call, a paid consulting session, a group workshop. Each one has its own URL, duration, price and availability rules. Every booking is against a specific service.
+
+## Service properties
+
+Each service has:
+
+| Property | Description |
+| --- | --- |
+| `title` | Human name shown on your booking page. |
+| `slug` | URL-safe ID, auto-derived from the title. |
+| `embed_url` | Full embeddable booking URL, ready to share or drop into a page. |
+| `duration` | Meeting length in minutes. Some services offer multiple durations. |
+| `price` | `0` for free, or a positive amount in minor currency units. |
+| `description` | Short explanation of what the meeting covers. |
+| `availability` | Which schedule applies and any service-specific lead time. |
+
+## Service types
+
+Three types cover the common cases:
+
+| Type | API fields | Description |
+| --- | --- | --- |
+| **One-to-one** | `is_group: false`, `is_personal_invite: false` | One booker, one slot. Standard for calls and consultations. |
+| **Group** | `is_group: true`, optional `max_attendees` | Multiple attendees in the same slot. Set `max_attendees` to cap seats. |
+| **Personal invite** | `is_personal_invite: true` | Private, invite-only service not listed on your public page. |
+
+<Note>
+  Group bookings and personal invites are **Pro only**. See [Free vs Pro](#free-tier-vs-pro).
+</Note>
+
+## Service slugs
+
+The slug is the last path segment of a booking URL:
+
+```text
+tikk.chat/joeri/discovery-call
+                └─────────────── slug: discovery-call
+```
+
+Tikk generates the slug from the title on creation. Spaces become hyphens, special characters are stripped. You can customise it at creation time. It must be unique on your profile.
+
+The slug is also what you pass as the `service` parameter in API requests:
+
+```text
+GET https://app.tikk.chat/api/v1/availability?service=discovery-call
+```
+
+## Free tier vs Pro
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="circle">
+    - **1 service** on your profile
+    - **1 synced calendar**
+    - One-to-one bookings only
+    - Tikk branding on your page
+  </Card>
+
+  <Card title="Pro at €12/mo" icon="star">
+    - **Unlimited services**
+    - **Unlimited synced calendars**
+    - Group bookings and personal invites
+    - 0% transaction fee on paid services
+    - Custom branding
+    - Manual approval mode
+  </Card>
+</CardGroup>
+
+Upgrade at [app.tikk.chat/register](https://app.tikk.chat/register).
+
+<Tip>
+  Make your first service a **free discovery call**. A short intro filters out unqualified leads and gives new visitors a low-friction way to book.
+</Tip>

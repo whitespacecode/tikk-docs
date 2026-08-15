@@ -1,0 +1,109 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Tikk",
+  "theme": "mint",
+  "colors": {
+    "primary": "#848484",
+    "light": "#151515",
+    "dark": "#cbcbcb"
+  },
+  "logo": {
+    "light": "/images/logo.svg",
+    "dark": "/images/logo-white.svg"
+  },
+  "favicon": {
+    "light": "/images/logo-icon2.svg",
+    "dark": "/images/logo-icon2.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Get Started Free",
+      "href": "https://app.tikk.chat/register"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "embed"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/booking-page",
+              "concepts/services",
+              "concepts/availability",
+              "concepts/bookings"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/calendar-sync",
+              "guides/payments",
+              "guides/manual-approval",
+              "guides/group-bookings"
+            ]
+          },
+          {
+            "group": "Plans & Billing",
+            "pages": [
+              "billing/plans",
+              "billing/faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/scopes",
+              "api-reference/errors"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/profile/get-profile",
+              "api-reference/availability/list-availability",
+              "api-reference/bookings/list-bookings",
+              "api-reference/bookings/get-booking"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://tikk.chat",
+      "linkedin": "https://www.linkedin.com/company/111278956"
+    }
+  },
+  "styling": {
+    "eyebrows": "section"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
+  "background": {
+    "decoration": "grid"
+  }
+}

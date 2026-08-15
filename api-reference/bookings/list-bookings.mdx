@@ -1,0 +1,318 @@
+---
+title: "GET /bookings. List and filter your booking history"
+sidebarTitle: "GET /bookings"
+description: "Paginated list of your bookings, filterable by status, date range and sort order. Full booking detail in every record."
+---
+
+The `/bookings` endpoint returns your bookings newest-first by default, with optional filters for status, scheduled date range and sort direction. Each record contains the full booking object (booker, service, location, payment state and more) so you rarely need follow-up lookups. All filters are optional and can be combined.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/bookings
+```
+
+**Required scope:** `bookings.read`
+
+## Example request
+
+```bash
+curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Query parameters
+
+<ParamField query="status" type="string">
+  Filter to bookings in a specific state. Accepted values: `pending`, `accepted`, `declined`, `cancelled`. Omit to return bookings of all statuses.
+</ParamField>
+
+<ParamField query="from" type="date-time">
+  Return only bookings with a `scheduled_at` at or after this moment. Provide an ISO 8601 date-time value (e.g. `2026-08-01T00:00:00Z`).
+</ParamField>
+
+<ParamField query="to" type="date-time">
+  Return only bookings with a `scheduled_at` at or before this moment. Must not precede `from` when both are supplied.
+</ParamField>
+
+<ParamField query="order" type="string">
+  Sort direction on `scheduled_at`. Accepted values: `asc`, `desc`. Defaults to `desc` (newest first).
+</ParamField>
+
+<ParamField query="per_page" type="integer">
+  Number of results per page. Between `1` and `100`. Defaults to `25`.
+</ParamField>
+
+<ParamField query="page" type="integer">
+  Page number to return, starting at `1`. Defaults to `1`.
+</ParamField>
+
+## Response schema
+
+<ResponseField name="data" type="array">
+  Ordered array of Booking objects matching your filters.
+
+  <Expandable title="Booking">
+    <ResponseField name="id" type="integer">
+      Unique booking identifier. Pass this to `GET /bookings/{id}` for a direct lookup.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Current state of the booking. One of: `pending`, `accepted`, `declined`, `cancelled`.
+    </ResponseField>
+
+    <ResponseField name="topic" type="string | null">
+      The subject or agenda the booker provided when scheduling.
+    </ResponseField>
+
+    <ResponseField name="duration_minutes" type="integer">
+      Length of the meeting in minutes.
+    </ResponseField>
+
+    <ResponseField name="scheduled_at" type="string (date-time) | null">
+      UTC date-time the meeting is scheduled for. `null` while the booking has not yet been scheduled.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string (date-time) | null">
+      UTC date-time the booking was first created.
+    </ResponseField>
+
+    <ResponseField name="notes" type="string | null">
+      Free-form notes attached to the booking.
+    </ResponseField>
+
+    <ResponseField name="cancellation_reason" type="string | null">
+      The reason provided when the booking was declined or cancelled. `null` for all other statuses.
+    </ResponseField>
+
+    <ResponseField name="booker" type="object">
+      The person who made the booking.
+
+      <Expandable title="booker fields">
+        <ResponseField name="name" type="string | null">
+          Booker's display name.
+        </ResponseField>
+
+        <ResponseField name="email" type="string | null">
+          Booker's email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="attendees" type="array">
+      Additional seats on group bookings. Empty array for one-to-one meetings.
+
+      <Expandable title="Attendee">
+        <ResponseField name="name" type="string | null">
+          Attendee's display name.
+        </ResponseField>
+
+        <ResponseField name="email" type="string | null">
+          Attendee's email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="service" type="object">
+      The service this booking was made against.
+
+      <Expandable title="service fields">
+        <ResponseField name="slug" type="string">
+          URL-safe service identifier.
+        </ResponseField>
+
+        <ResponseField name="title" type="string">
+          Human-readable service name.
+        </ResponseField>
+
+        <ResponseField name="is_group" type="boolean">
+          `true` if multiple people can book the same time slot.
+        </ResponseField>
+
+        <ResponseField name="max_attendees" type="integer | null">
+          Seat cap for group services. `null` for one-to-one or uncapped services.
+        </ResponseField>
+
+        <ResponseField name="is_personal_invite" type="boolean">
+          `true` if this service was booked via a private link not listed on your public profile.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="location" type="object">
+      Where the meeting takes place.
+
+      <Expandable title="location fields">
+        <ResponseField name="type" type="string | null">
+          One of `video`, `in_person`, `none`, or `null`.
+        </ResponseField>
+
+        <ResponseField name="label" type="string | null">
+          Human-readable location name shown to the booker.
+        </ResponseField>
+
+        <ResponseField name="address" type="string | null">
+          Physical address for `in_person` meetings. `null` for all other types.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="meeting_link" type="string | null">
+      Checkout URL for paid meetings while payment is still outstanding. `null` once payment is settled or for free meetings.
+    </ResponseField>
+
+    <ResponseField name="conference_link" type="string | null">
+      Video call URL sent to all participants. `null` for non-video meetings.
+    </ResponseField>
+
+    <ResponseField name="payment" type="object">
+      Payment state for this booking.
+
+      <Expandable title="payment fields">
+        <ResponseField name="status" type="string">
+          One of: `none`, `pending`, `paid`, `failed`, `refunded`.
+        </ResponseField>
+
+        <ResponseField name="amount" type="integer | null">
+          Price in minor currency units. For example, `5000` equals €50.00. `null` for free meetings.
+        </ResponseField>
+
+        <ResponseField name="currency" type="string">
+          ISO 4217 currency code (e.g. `EUR`, `USD`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="links" type="object">
+  Pagination links for navigating the full result set.
+
+  <Expandable title="links fields">
+    <ResponseField name="first" type="uri | null">
+      URL of the first page.
+    </ResponseField>
+
+    <ResponseField name="last" type="uri | null">
+      URL of the last page.
+    </ResponseField>
+
+    <ResponseField name="prev" type="uri | null">
+      URL of the previous page. `null` when you are on the first page.
+    </ResponseField>
+
+    <ResponseField name="next" type="uri | null">
+      URL of the next page. `null` when you are on the last page.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Pagination metadata for the current response.
+
+  <Expandable title="meta fields">
+    <ResponseField name="current_page" type="integer">
+      The page number returned in this response.
+    </ResponseField>
+
+    <ResponseField name="from" type="integer | null">
+      Index of the first result in the current page, relative to the full result set.
+    </ResponseField>
+
+    <ResponseField name="to" type="integer | null">
+      Index of the last result in the current page.
+    </ResponseField>
+
+    <ResponseField name="last_page" type="integer">
+      Total number of pages available.
+    </ResponseField>
+
+    <ResponseField name="per_page" type="integer">
+      Number of results per page used for this response.
+    </ResponseField>
+
+    <ResponseField name="total" type="integer">
+      Total number of matching bookings across all pages.
+    </ResponseField>
+
+    <ResponseField name="path" type="uri">
+      Base URL of this endpoint, without pagination query parameters.
+    </ResponseField>
+
+    <ResponseField name="links" type="array">
+      Array of numbered pager link objects for building a page-number UI.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "data": [
+    {
+      "id": 1234567,
+      "status": "accepted",
+      "topic": "Intro chat about your API integration",
+      "duration_minutes": 30,
+      "scheduled_at": "2026-08-19T12:00:00+00:00",
+      "created_at": "2026-08-10T09:14:00+00:00",
+      "notes": null,
+      "cancellation_reason": null,
+      "booker": {
+        "name": "Alex Kim",
+        "email": "alex@example.com"
+      },
+      "attendees": [],
+      "service": {
+        "slug": "discovery-call",
+        "title": "Discovery call",
+        "is_group": false,
+        "max_attendees": null,
+        "is_personal_invite": false
+      },
+      "location": {
+        "type": "video",
+        "label": "Tikk Video",
+        "address": null
+      },
+      "meeting_link": null,
+      "conference_link": "https://meet.tikk.chat/abc123",
+      "payment": {
+        "status": "none",
+        "amount": null,
+        "currency": "EUR"
+      }
+    }
+  ],
+  "links": {
+    "first": "https://app.tikk.chat/api/v1/bookings?page=1",
+    "last": "https://app.tikk.chat/api/v1/bookings?page=4",
+    "prev": null,
+    "next": "https://app.tikk.chat/api/v1/bookings?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "to": 25,
+    "last_page": 4,
+    "per_page": 25,
+    "total": 83,
+    "path": "https://app.tikk.chat/api/v1/bookings",
+    "links": []
+  }
+}
+```
+
+<Tip>
+  Combine `status=accepted`, a `from` timestamp and `order=asc` to walk your upcoming confirmed schedule in chronological order. Ideal for syncing bookings to a calendar or a "what's next" dashboard widget.
+</Tip>
+
+## Errors
+
+| Status | Meaning |
+| --- | --- |
+| `401` | Missing or invalid API key. |
+| `403` | Your API key does not have the `bookings.read` scope. |
+| `422` | One or more query parameters failed validation (e.g. `to` precedes `from`, `per_page` outside 1–100, or an unrecognised `status` value). |
+| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

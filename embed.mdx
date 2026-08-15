@@ -1,0 +1,54 @@
+---
+title: "Embed Tikk with one script tag"
+sidebarTitle: "Embed widget"
+description: "Add your booking calendar to any site with a script tag and the data-domain attribute. No iframe, no plugin."
+---
+
+The embed widget places your booking calendar inside any web page with a single `<script>` tag. It renders inline where you drop it. No iframe, no plugin, no layout changes. Visitors browse your services, pick a slot and book without leaving your site.
+
+## Basic embed
+
+Drop this snippet into your HTML where you want the widget to appear. Replace `yourname` with your username.
+
+```html
+<script
+  async
+  src="https://tikk.chat/embed.js"
+  data-domain="yourname"
+></script>
+```
+
+`data-domain` is your Tikk username. It's the same handle in your booking URL (`tikk.chat/yourname`) and the `username` field returned by `GET /api/v1/profile`.
+
+## Embed a specific service
+
+To send visitors straight to one service, add `data-service` with the service's slug.
+
+```html
+<script
+  async
+  src="https://tikk.chat/embed.js"
+  data-domain="yourname"
+  data-service="discovery-call"
+></script>
+```
+
+The service slug is the URL-friendly ID for a service. A service named "Discovery Call" is usually `discovery-call`. You can view and edit the slug on the service page in your dashboard.
+
+## Find your username
+
+To fetch your username programmatically, call the profile endpoint:
+
+```http
+GET https://app.tikk.chat/api/v1/profile
+```
+
+The response includes a `username` field. Use that for `data-domain`. See [Get Profile](/api-reference/profile/get-profile) for the full schema.
+
+<Note>
+  The widget is responsive and adapts to its container. It also picks up your branding (colours and logo) so it matches your booking page.
+</Note>
+
+<Tip>
+  Place the `<script>` tag exactly where you want the widget. It renders inline at that spot, so you can drop it into a landing page section, a contact page or anywhere else.
+</Tip>

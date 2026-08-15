@@ -1,0 +1,225 @@
+---
+title: "GET /bookings/{id}. Retrieve a single booking by ID"
+sidebarTitle: "GET /bookings/{id}"
+description: "Fetch a single booking by integer id. Returns all fields including booker, service, location, conference link and payment."
+---
+
+The `/bookings/{id}` endpoint retrieves a single booking in full detail by its integer id. Use it to look up a record after a webhook, resolve a booking linked in another system or refresh stale data. The response is the same full Booking object as the list endpoint. There's no abbreviated version.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/bookings/{id}
+```
+
+**Required scope:** `bookings.read`
+
+## Path parameters
+
+<ParamField path="id" type="integer" required>
+  The unique integer identifier of the booking to retrieve. Obtain this value from the `id` field on any Booking object returned by `GET /bookings`.
+</ParamField>
+
+## Example request
+
+```bash
+curl https://app.tikk.chat/api/v1/bookings/1234567 \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Response schema
+
+<ResponseField name="data" type="object">
+  The matching Booking object.
+
+  <Expandable title="Booking">
+    <ResponseField name="id" type="integer">
+      Unique booking identifier.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Current state of the booking. One of: `pending`, `accepted`, `declined`, `cancelled`.
+    </ResponseField>
+
+    <ResponseField name="topic" type="string | null">
+      The subject or agenda the booker provided when scheduling.
+    </ResponseField>
+
+    <ResponseField name="duration_minutes" type="integer">
+      Length of the meeting in minutes.
+    </ResponseField>
+
+    <ResponseField name="scheduled_at" type="string (date-time) | null">
+      UTC date-time the meeting is scheduled for. `null` while the booking has not yet been scheduled.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string (date-time) | null">
+      UTC date-time the booking was first created.
+    </ResponseField>
+
+    <ResponseField name="notes" type="string | null">
+      Free-form notes attached to the booking.
+    </ResponseField>
+
+    <ResponseField name="cancellation_reason" type="string | null">
+      The reason provided when the booking was declined or cancelled. `null` for all other statuses.
+    </ResponseField>
+
+    <ResponseField name="booker" type="object">
+      The person who made the booking.
+
+      <Expandable title="booker fields">
+        <ResponseField name="name" type="string | null">
+          Booker's display name.
+        </ResponseField>
+
+        <ResponseField name="email" type="string | null">
+          Booker's email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="attendees" type="array">
+      Additional seats on group bookings. Empty array for one-to-one meetings.
+
+      <Expandable title="Attendee">
+        <ResponseField name="name" type="string | null">
+          Attendee's display name.
+        </ResponseField>
+
+        <ResponseField name="email" type="string | null">
+          Attendee's email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="service" type="object">
+      The service this booking was made against.
+
+      <Expandable title="service fields">
+        <ResponseField name="slug" type="string">
+          URL-safe service identifier.
+        </ResponseField>
+
+        <ResponseField name="title" type="string">
+          Human-readable service name.
+        </ResponseField>
+
+        <ResponseField name="is_group" type="boolean">
+          `true` if multiple people can book the same time slot.
+        </ResponseField>
+
+        <ResponseField name="max_attendees" type="integer | null">
+          Seat cap for group services. `null` for one-to-one or uncapped services.
+        </ResponseField>
+
+        <ResponseField name="is_personal_invite" type="boolean">
+          `true` if this service was booked via a private link not listed on your public profile.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="location" type="object">
+      Where the meeting takes place.
+
+      <Expandable title="location fields">
+        <ResponseField name="type" type="string | null">
+          One of `video`, `in_person`, `none`, or `null`.
+        </ResponseField>
+
+        <ResponseField name="label" type="string | null">
+          Human-readable location name shown to the booker.
+        </ResponseField>
+
+        <ResponseField name="address" type="string | null">
+          Physical address for `in_person` meetings. `null` for all other types.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="meeting_link" type="string | null">
+      Checkout URL for paid meetings while payment is still outstanding. `null` once payment is settled or for free meetings.
+    </ResponseField>
+
+    <ResponseField name="conference_link" type="string | null">
+      Video call URL sent to all participants. `null` for non-video meetings.
+    </ResponseField>
+
+    <ResponseField name="payment" type="object">
+      Payment state for this booking.
+
+      <Expandable title="payment fields">
+        <ResponseField name="status" type="string">
+          One of: `none`, `pending`, `paid`, `failed`, `refunded`.
+        </ResponseField>
+
+        <ResponseField name="amount" type="integer | null">
+          Price in minor currency units. For example, `5000` equals €50.00. `null` for free meetings.
+        </ResponseField>
+
+        <ResponseField name="currency" type="string">
+          ISO 4217 currency code (e.g. `EUR`, `USD`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "data": {
+    "id": 1234567,
+    "status": "accepted",
+    "topic": "Exploring a potential partnership",
+    "duration_minutes": 30,
+    "scheduled_at": "2026-08-19T12:00:00+00:00",
+    "created_at": "2026-08-10T09:14:00+00:00",
+    "notes": "Please bring your team's Q3 roadmap if possible.",
+    "cancellation_reason": null,
+    "booker": {
+      "name": "Alex Kim",
+      "email": "alex@example.com"
+    },
+    "attendees": [
+      {
+        "name": "Sam Rivera",
+        "email": "sam@example.com"
+      }
+    ],
+    "service": {
+      "slug": "strategy-session",
+      "title": "Strategy session",
+      "is_group": true,
+      "max_attendees": 5,
+      "is_personal_invite": false
+    },
+    "location": {
+      "type": "in_person",
+      "label": "Brussels HQ",
+      "address": "Rue de la Loi 42, 1000 Brussels, Belgium"
+    },
+    "meeting_link": null,
+    "conference_link": null,
+    "payment": {
+      "status": "paid",
+      "amount": 5000,
+      "currency": "EUR"
+    }
+  }
+}
+```
+
+<Note>
+  Requesting an id that belongs to a booking in another user's account returns `404`, not `403`. The API never confirms or denies that a booking outside your account exists, so you cannot enumerate other users' booking ids through error codes.
+</Note>
+
+## Errors
+
+| Status | Meaning |
+| --- | --- |
+| `401` | Missing or invalid API key. |
+| `403` | Your API key does not have the `bookings.read` scope. |
+| `404` | No booking with the given `id` exists in your account. IDs belonging to other accounts also return `404`. |
+| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

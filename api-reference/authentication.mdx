@@ -1,0 +1,77 @@
+---
+title: "API authentication. API keys and OAuth tokens"
+sidebarTitle: "Authentication"
+description: "Authenticate API requests with API keys or OAuth access tokens. Send credentials and handle common auth errors."
+---
+
+Every API request must include a bearer token in the `Authorization` header. Tikk supports two credential types. API keys for your own scripts and server-to-server integrations. OAuth access tokens for partner apps acting on behalf of another user. Both use the same bearer token format, so the request structure is the same.
+
+## Sending credentials
+
+Include your credential in the `Authorization` header of every request:
+
+```http
+Authorization: Bearer tikk_sk_...
+```
+
+Here is a complete example using curl:
+
+```bash
+curl https://app.tikk.chat/api/v1/profile \
+  -H "Authorization: Bearer tikk_sk_your_key_here"
+```
+
+## API keys
+
+API keys are the simplest credential type. They are tied to your own Tikk account, never expire on their own, and automatically carry all available scopes. Use them for scripts, automation, and any server-side integration where you are accessing your own data.
+
+<Steps>
+  <Step title="Open API Keys settings">
+    Go to **Settings → API Keys** in your Tikk account dashboard.
+  </Step>
+  <Step title="Create a new key">
+    Click **Create new key** and give it a descriptive name so you can identify it later (for example, `zapier-integration` or `analytics-script`).
+  </Step>
+  <Step title="Copy the key immediately">
+    Copy the key. It starts with `tikk_sk_` and is shown **only once**. Tikk does not store the raw value, so you can't retrieve it after closing the dialog.
+  </Step>
+  <Step title="Store the key securely">
+    Save the key in your environment variables or a secrets manager (such as AWS Secrets Manager, HashiCorp Vault, or a `.env` file that is excluded from version control).
+  </Step>
+</Steps>
+
+<Warning>
+  Never embed an API key in client-side code, mobile app binaries, or version control. Anyone who obtains the key can read your Tikk data until you revoke it. If a key is ever exposed, revoke it immediately in **Settings → API Keys** and create a replacement.
+</Warning>
+
+## OAuth 2.0 (for partner apps)
+
+If you are building an integration that accesses Tikk data on behalf of another user, use the OAuth 2.0 authorization code flow. Your users grant your app permission through Tikk's hosted consent screen, and Tikk returns an access token your app can use on their behalf.
+
+| Parameter | Value |
+| --- | --- |
+| Authorization URL | `https://app.tikk.chat/oauth/authorize` |
+| Token URL | `https://app.tikk.chat/oauth/token` |
+| Refresh URL | `https://app.tikk.chat/oauth/token` |
+| Access token lifetime | 30 days |
+| Refresh token lifetime | 90 days |
+
+**Start the flow** by redirecting the user to the authorization URL with your app's parameters:
+
+```text
+https://app.tikk.chat/oauth/authorize
+  ?client_id=YOUR_CLIENT_ID
+  &redirect_uri=https://yourapp.com/callback
+  &response_type=code
+  &scope=profile.read availability.read bookings.read
+```
+
+After the user approves, Tikk redirects to your `redirect_uri` with a `code` parameter. Exchange that code for an access token at the token URL, then store the access token and refresh token securely. Use the refresh token to obtain a new access token before the current one expires.
+
+## Credential scope and user isolation
+
+A credential (API key or OAuth token) can only access data owned by the user it belongs to. You can't use your own API key to read another user's profile, availability or bookings. Requests for resources outside your account return `404`, not `403`, so the existence of other users' data is never revealed.
+
+<Info>
+  See the [Scopes](/api-reference/scopes) page for the full list of available scopes, which endpoints require them, and what happens when a required scope is missing.
+</Info>

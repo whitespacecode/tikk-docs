@@ -1,0 +1,63 @@
+---
+title: "Your booking page"
+sidebarTitle: "Booking page"
+description: "Your booking page at tikk.chat/yourname shows every active service so visitors can book you instantly."
+---
+
+Your booking page is your public scheduling hub at `tikk.chat/yourname`. It lists every active service you've published, alongside your name, title, bio, avatar and logo. A lightweight, professional landing page that works around the clock.
+
+## What's on your page
+
+Visitors see a snapshot of who you are and what they can book:
+
+| Field | Description |
+| --- | --- |
+| `name` | Your display name at the top of the page. |
+| `title` | Your job title or tagline. |
+| `bio` | A short description of you or your work. |
+| `avatar_url` | URL of your profile photo. |
+| `logo_url` | URL of your brand or company logo. |
+
+Below that, every active service shows its title and a direct booking URL. Click a service to land in its booking flow.
+
+## Booking URL structure
+
+Every service has its own URL:
+
+```text
+tikk.chat/{username}/{service-slug}
+```
+
+The **slug** is the URL-safe ID. If your username is `joeri` and your service slug is `discovery-call`:
+
+```text
+tikk.chat/joeri/discovery-call
+```
+
+Slugs are derived from the service title on creation and are what you pass as the `service` parameter in API requests. See [Services](/concepts/services) for more.
+
+## The `profile_complete` flag
+
+Your page only takes bookings once you've claimed a username. Until then `profile_complete` is `false` and the page isn't live.
+
+<Warning>
+  No one can book you until `profile_complete` is `true`. Claim your username in account settings to activate the page.
+</Warning>
+
+Once you set a username, `profile_complete` flips to `true` and your page goes live at `tikk.chat/yourname`.
+
+## Access your profile via the API
+
+Your profile data (name, title, bio, avatar, logo and active services) is available through the API so you can display it anywhere.
+
+<Note>
+  Fetch the full profile and service list from [Get Profile](/api-reference/profile/get-profile). The response includes every active service with its slug and booking URL.
+</Note>
+
+## Custom branding
+
+By default, Tikk branding shows on your page and in booker emails. On the **Pro plan** you can remove Tikk branding and swap in your own logo, colours and domain for a fully white-labelled experience.
+
+<Tip>
+  [Upgrade to Pro](https://app.tikk.chat/register) (€12/mo) for custom branding, unlimited services, group bookings and manual approval.
+</Tip>

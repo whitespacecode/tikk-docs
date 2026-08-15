@@ -1,0 +1,97 @@
+{
+  "projectType": "saas",
+  "projectName": "Tikk",
+  "projectDescription": "Tikk is a free scheduling platform that lets professionals create a personal booking page, sync calendars, collect payments, and manage bookings — with a read-only REST API for integrations.",
+  "theme": "luma",
+  "primaryColor": "#848484",
+  "lightColor": "#151515",
+  "darkColor": "#cbcbcb",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "embed"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/booking-page",
+              "concepts/services",
+              "concepts/availability",
+              "concepts/bookings"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/calendar-sync",
+              "guides/payments",
+              "guides/manual-approval",
+              "guides/group-bookings"
+            ]
+          },
+          {
+            "group": "Plans & Billing",
+            "pages": [
+              "billing/plans",
+              "billing/faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/scopes",
+              "api-reference/errors"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/profile/get-profile",
+              "api-reference/availability/list-availability",
+              "api-reference/bookings/list-bookings",
+              "api-reference/bookings/get-booking"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Personal booking page at tikk.chat/username",
+    "Multi-calendar sync (Google, Outlook, iCloud, iCal)",
+    "No double-booking prevention across all connected calendars",
+    "Multiple bookable services per page (discovery call, paid session, workshop)",
+    "Payment collection at booking (iDEAL, Bancontact, card) with 0% fee on Pro",
+    "Manual booking approval — review requester before accepting",
+    "Automatic video meeting links (Google Meet, Teams, Jitsi)",
+    "Group bookings with seat caps",
+    "Personal invite links for private one-off services",
+    "EU-hosted, GDPR-compliant, end-to-end encrypted",
+    "Embeddable booking widget via script tag",
+    "Read-only REST API for integrations"
+  ],
+  "publicApiSurface": [
+    "GET /api/v1/profile — returns public profile and active services",
+    "GET /api/v1/availability — lists free time slots, filterable by service and date range",
+    "GET /api/v1/bookings — paginates bookings with status/date/order filters",
+    "GET /api/v1/bookings/{id} — retrieves a single booking by id",
+    "OAuth2 authorization code flow (https://app.tikk.chat/oauth/authorize)",
+    "API key authentication (tikk_sk_... bearer token)",
+    "Scopes: profile.read, availability.read, bookings.read"
+  ]
+}

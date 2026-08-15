@@ -1,0 +1,147 @@
+---
+title: "Bookings"
+sidebarTitle: "Bookings"
+description: "Every booking has a lifecycle. Statuses, fields, payment states and how to read them."
+---
+
+Every booking runs through a lifecycle from request to meeting, decline or cancel. The `status` field is the source of truth for where a booking sits at any moment.
+
+## Booking statuses
+
+| Status | Meaning |
+| --- | --- |
+| `pending` | Request received. In **manual approval mode** the meeting is waiting on your approval. In standard mode, a booking briefly sits here before confirming. |
+| `accepted` | Confirmed. Both parties are committed to the time. |
+| `declined` | You declined the request. The booker is notified and the slot is freed. |
+| `cancelled` | Cancelled after it was accepted. Either party can trigger this. |
+
+<Info>
+  Manual approval mode (every booking starts `pending` until you accept or decline) is **Pro only**. On the free tier, bookings go straight to `accepted`.
+</Info>
+
+## Booking fields
+
+The booking object returned by the API contains the following fields:
+
+<ResponseField name="id" type="string">
+  Unique ID for the booking. Use it to retrieve or reference the booking in API calls.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current state. One of `pending`, `accepted`, `declined` or `cancelled`. See [Booking statuses](#booking-statuses).
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  When the request was submitted, as a UTC ISO 8601 timestamp (e.g. `2025-09-15T08:42:00Z`).
+</ResponseField>
+
+<ResponseField name="scheduled_at" type="string | null">
+  When the meeting starts, as a UTC ISO 8601 timestamp (e.g. `2025-09-15T10:00:00Z`). `null` if not yet scheduled.
+</ResponseField>
+
+<ResponseField name="duration_minutes" type="integer">
+  Meeting length in minutes, as set on the service at booking time.
+</ResponseField>
+
+<ResponseField name="topic" type="string">
+  Free-text description of what the booker wants to cover.
+</ResponseField>
+
+<ResponseField name="service" type="object">
+  <Expandable title="Service fields">
+    <ResponseField name="slug" type="string">
+      URL-safe ID of the booked service (e.g. `discovery-call`). Last path segment of the booking URL.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Human name of the service at booking time.
+    </ResponseField>
+
+    <ResponseField name="is_group" type="boolean">
+      `true` for group services (multiple attendees share the slot).
+    </ResponseField>
+
+    <ResponseField name="max_attendees" type="integer | null">
+      Seat cap for group services. `null` if no cap or not a group service.
+    </ResponseField>
+
+    <ResponseField name="is_personal_invite" type="boolean">
+      `true` if this is a private personal invite not listed on your public page.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="booker" type="object">
+  Name and email of the person who made the booking.
+</ResponseField>
+
+<ResponseField name="attendees" type="array">
+  Additional attendees for group bookings, each with a name and email. Empty for one-to-one bookings.
+</ResponseField>
+
+<ResponseField name="location" type="object">
+  <Expandable title="Location fields">
+    <ResponseField name="type" type="string">
+      One of `video`, `in_person` or `none`.
+    </ResponseField>
+
+    <ResponseField name="label" type="string">
+      Human description of the location shown to both parties.
+    </ResponseField>
+
+    <ResponseField name="address" type="string">
+      Physical address for `in_person` meetings. Empty otherwise.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="conference_link" type="string | null">
+  Video call URL when location is `video`. `null` for in-person or none.
+</ResponseField>
+
+<ResponseField name="payment" type="object">
+  <Expandable title="Payment fields">
+    <ResponseField name="status" type="string">
+      One of `none`, `pending`, `paid`, `failed` or `refunded`. Free meetings always return `none`.
+    </ResponseField>
+
+    <ResponseField name="amount" type="integer">
+      Amount in **minor currency units** (e.g. `5000` is €50.00). See [Payment info](#payment-info).
+    </ResponseField>
+
+    <ResponseField name="currency" type="string">
+      ISO 4217 code (e.g. `EUR`, `USD`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="cancellation_reason" type="string | null">
+  Reason given on decline or cancel. `null` while active.
+</ResponseField>
+
+<ResponseField name="notes" type="string | null">
+  Any extra notes from you or the booker.
+</ResponseField>
+
+## Payment info
+
+Amounts are in **minor currency units**, the smallest denomination of the currency. For EUR and USD, divide by 100.
+
+```text
+amount: 5000, currency: "EUR"  →  €50.00
+amount: 2500, currency: "USD"  →  $25.00
+amount: 0,    currency: "EUR"  →  free
+```
+
+Free services always return `payment.status = "none"` and `payment.amount = 0`. `pending` means the invoice is issued but not yet paid.
+
+<Note>
+  For paid bookings that haven't been paid yet, the booking object also has a `meeting_link` field. That's the **checkout link** the booker uses to pay. It's not the same as `conference_link`, which is the video URL for the meeting itself. Don't present `meeting_link` as where the meeting happens.
+</Note>
+
+<Info>
+  Fetch bookings via the API:
+
+  - [List Bookings](/api-reference/bookings/list-bookings). Paginated list with status and date filters.
+  - [Get Booking](/api-reference/bookings/get-booking). Full booking object for a single ID.
+</Info>

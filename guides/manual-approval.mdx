@@ -1,0 +1,65 @@
+---
+title: "Manual approval"
+sidebarTitle: "Manual approval"
+description: "Review each request before it hits your calendar. See the booker's name, email and topic upfront."
+---
+
+With manual approval on, booking requests arrive as cards in your dashboard. You see the booker's name, email and topic before anything is confirmed. Nothing lands on your calendar until you accept.
+
+<Note>
+  Manual approval is a **Pro feature**. [Start a 7-day free trial](https://app.tikk.chat/register) to enable it.
+</Note>
+
+## Enable manual approval
+
+You can set it per service, so you can mix auto-confirmed and approval-required offerings on the same account.
+
+<Steps>
+  <Step title="Open the service">
+    Go to **Services** and click the one you want to update.
+  </Step>
+  <Step title="Select Manual approval">
+    In **Booking confirmation**, switch from **Automatic** to **Manual approval**.
+  </Step>
+  <Step title="Save">
+    Click **Save**. New requests for this service now start as `pending`.
+  </Step>
+</Steps>
+
+## The approval flow
+
+1. **Booker submits the form**. They pick a slot, fill in details and click Book. For paid services, payment is collected and held pending your decision.
+2. **Status is `pending`**. The slot is held. No calendar event yet.
+3. **You get a notification**. Email plus a dashboard notification with name, email and topic.
+4. **You review**. Open the card in your dashboard for the full details.
+5. **Accept or decline:**
+   - **Accept**. Status becomes `accepted`. A calendar event is created and both parties get a meeting link.
+   - **Decline**. Status becomes `declined`. You can add a reason. The booker is emailed and any held payment is released or refunded.
+
+## When to use it
+
+<CardGroup cols={2}>
+  <Card title="High-value consulting" icon="briefcase">
+    Only take discovery calls with prospects who are a fit. Check the topic before committing a slot.
+  </Card>
+
+  <Card title="Coaching intake" icon="heart">
+    Check alignment between your approach and the client's goals before session one.
+  </Card>
+
+  <Card title="Selective hiring" icon="user-check">
+    Screen candidates with a short prompt before booking a formal interview.
+  </Card>
+
+  <Card title="Paid consultations" icon="dollar-sign">
+    Agree scope and expectations upfront. Avoid disputes later.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Pair manual approval with a **Topic** or **Tell me about your situation** prompt in your booking form. Written context makes approvals faster and stops you walking in cold.
+</Tip>
+
+<Info>
+  Track pending requests via `GET /api/v1/bookings?status=pending`. See [List Bookings](/api-reference/bookings/list-bookings).
+</Info>

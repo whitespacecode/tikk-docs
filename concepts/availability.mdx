@@ -1,0 +1,85 @@
+---
+title: "How Tikk finds open time slots"
+sidebarTitle: "Availability"
+description: "Tikk layers your weekly schedule, date overrides, buffer times and synced calendars to compute open slots."
+---
+
+Tikk builds your available slots from four layers: your weekly schedule, date overrides, buffer times and every connected calendar. A slot only shows up when it clears all four.
+
+## What determines availability
+
+Tikk applies these layers in order:
+
+<Steps>
+  <Step title="Weekly schedule">
+    Your weekly schedule is the base. Set the hours you're open for each day of the week (say, Mon-Fri 09:00-17:00). Slots outside those windows never show.
+  </Step>
+  <Step title="Date overrides">
+    Adjust or block availability on specific dates. Use these for holidays, vacation or one-off changes to your hours.
+  </Step>
+  <Step title="Synced calendars">
+    Tikk checks every connected calendar. If any calendar has a busy event overlapping a slot, the slot is hidden. No double bookings.
+  </Step>
+  <Step title="Buffer times">
+    Buffers add a gap before or after each booking. With a 15-minute buffer after, a meeting ending at 10:00 pushes the next slot to 10:15.
+  </Step>
+  <Step title="Service-specific settings">
+    Each service can override the base window and set its own lead time (like "at least 24 hours notice"). These narrow the pool further.
+  </Step>
+</Steps>
+
+## How slots are generated
+
+Tikk splits your open windows into slots of the service's duration (default 30 minutes). A slot only makes the response if it passes every layer. One conflict, one drop.
+
+<Info>
+  Slots are generated in real time when you hit the availability endpoint. Results always reflect your latest calendar state.
+</Info>
+
+## Slot fields
+
+Each slot returns:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `start` | UTC date-time | Slot start as a UTC ISO 8601 timestamp (e.g. `2025-09-15T09:00:00Z`). |
+| `end` | UTC date-time | Slot end as a UTC ISO 8601 timestamp. |
+| `label` | string | Start time formatted in the **host's timezone**, ready to display. |
+| `spots_remaining` | integer | _(Group services only)_ Seats left in the slot. Omitted for one-to-one services. |
+
+`start` and `end` are always UTC so you can do reliable time math. Use `label` when you want a ready-to-show string in the host's local time.
+
+## Timezone handling
+
+Your weekly schedule and date overrides live in **your timezone**, set in account settings. Each returned slot includes a `label` in your timezone. Bookers see times auto-converted to their local timezone.
+
+<Warning>
+  If you change your account timezone, review your schedule and any active overrides. Stored hours don't shift with the timezone change.
+</Warning>
+
+## General vs service-scoped availability
+
+You can query in two modes:
+
+<Tabs>
+  <Tab title="General availability">
+    Without a `service` parameter you get your overall open windows from the base schedule. Useful for a broad calendar view or checking whether you're free on a given day.
+
+    ```http
+    GET https://app.tikk.chat/api/v1/availability
+    ```
+  </Tab>
+  <Tab title="Service-scoped availability">
+    Scoping to a service applies its duration, lead time and availability settings on top of your base schedule. This is what the booking page uses to show real bookable slots.
+
+    ```http
+    GET https://app.tikk.chat/api/v1/availability?service=discovery-call
+    ```
+  </Tab>
+</Tabs>
+
+Use service-scoped availability for booking flows so the slots you show match what someone can actually reserve.
+
+<Note>
+  Full request and response shape lives in the [List Availability](/api-reference/availability/list-availability) reference.
+</Note>

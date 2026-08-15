@@ -1,0 +1,49 @@
+---
+title: "API scopes. Access permissions for each endpoint"
+sidebarTitle: "Scopes"
+description: "What each scope grants, how to request scopes for OAuth tokens and what the API returns when a required scope is missing."
+---
+
+Scopes control what your credential can access. Each endpoint requires a specific scope. If your credential doesn't carry it, the API returns `403 Forbidden`. It never returns partial data or silently omits fields. Designing around scopes from the start keeps your integration predictable and limits the blast radius if a token leaks.
+
+## Available scopes
+
+| Scope | Required for | Grants |
+| --- | --- | --- |
+| `profile.read` | `GET /profile` | Public profile, username, and active services |
+| `availability.read` | `GET /availability` | Available time slots |
+| `bookings.read` | `GET /bookings`, `GET /bookings/{id}` | Existing bookings |
+
+## API keys
+
+API keys created under **Settings → API Keys** carry all three scopes automatically. No extra configuration needed. A key is ready to call any endpoint as soon as you create it.
+
+## OAuth tokens
+
+When building a partner app, request only the scopes your integration actually needs. Specify them in the `scope` query parameter on the authorization URL as a space-separated list:
+
+```text
+https://app.tikk.chat/oauth/authorize
+  ?client_id=YOUR_CLIENT_ID
+  &redirect_uri=https://yourapp.com/callback
+  &response_type=code
+  &scope=profile.read bookings.read
+```
+
+The user sees exactly which scopes your app is requesting on Tikk's consent screen. The resulting access token only carries the scopes you requested, even if the user's account has broader permissions.
+
+## Missing scope response
+
+If you call an endpoint without the required scope, the API responds with `403 Forbidden` and the following body:
+
+```json
+{
+  "message": "Invalid scope(s) provided."
+}
+```
+
+This response is the same whether the scope was never requested (OAuth token) or the credential is otherwise valid. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
+
+<Tip>
+  Request the minimum scopes your integration needs. Fewer scopes means smaller impact if a token leaks. An attacker with a `profile.read`-only token can't reach bookings data.
+</Tip>

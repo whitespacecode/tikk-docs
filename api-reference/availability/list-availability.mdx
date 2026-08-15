@@ -1,0 +1,147 @@
+---
+title: "GET /availability. List available booking time slots"
+sidebarTitle: "GET /availability"
+description: "Day-by-day free slots across a date range, optionally scoped to a service, with configurable slot duration up to 31 days."
+---
+
+The `/availability` endpoint returns every time slot you are bookable in, grouped by date. Use it to build custom scheduling UIs, sync free time to external tools or validate a proposed meeting time before creating a booking. Days that contain no available slots are omitted from the response, so an empty `data` object means nothing is bookable in the requested range.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/availability
+```
+
+**Required scope:** `availability.read`
+
+## Example request
+
+```bash
+curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026-08-17&to=2026-08-24&duration=30" \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Query parameters
+
+<ParamField query="service" type="string">
+  Service slug (e.g. `discovery-call`) or the full booking URL (e.g. `https://tikk.chat/joeri/discovery-call`). When omitted, the response reflects your general availability across all services. Supplying an unknown value returns `404`. Maximum 100 characters.
+</ParamField>
+
+<ParamField query="from" type="date">
+  First day of the requested range in `YYYY-MM-DD` format. Defaults to today. Past days never return slots regardless of what you pass here.
+</ParamField>
+
+<ParamField query="to" type="date">
+  Last day of the requested range in `YYYY-MM-DD` format. Defaults to 7 days after `from`. The range is capped at 31 days. Any wider window is silently clamped, and `meta.to` in the response tells you the actual end date that was answered.
+</ParamField>
+
+<ParamField query="duration" type="integer">
+  Desired slot length in minutes. Must be between `15` and `180`. Defaults to `30`. Slots shorter than your configured buffer or longer than the service's maximum duration may reduce or eliminate available slots.
+</ParamField>
+
+<Note>
+  Days with zero free slots are omitted from `data`. An empty `data` object is not an error. It just means no slots are available in that range.
+</Note>
+
+<Note>
+  The date range is capped at 31 days. If you pass a `to` that is more than 31 days after `from`, the API silently clamps the window and reports the actual end date in `meta.to`. Always read `meta.to` rather than echoing back your own input.
+</Note>
+
+## Response schema
+
+<ResponseField name="data" type="object">
+  An object whose keys are `YYYY-MM-DD` dates and whose values are arrays of available slots for that day. Days with no free slots are omitted.
+
+  <Expandable title="Slot">
+    <ResponseField name="start" type="string (date-time)">
+      Slot start time in UTC, ISO 8601 format (e.g. `2026-08-17T08:00:00+00:00`).
+    </ResponseField>
+
+    <ResponseField name="end" type="string (date-time)">
+      Slot end time in UTC, ISO 8601 format.
+    </ResponseField>
+
+    <ResponseField name="label" type="string">
+      Start time rendered in the host's local timezone (e.g. `"10:00"`). Suitable for display directly to end users.
+    </ResponseField>
+
+    <ResponseField name="spots_remaining" type="integer">
+      Only present for group services that publish remaining capacity. Omitted on standard one-to-one services.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Metadata describing the range and context of the response.
+
+  <Expandable title="meta fields">
+    <ResponseField name="from" type="date">
+      The actual start date of the range answered, in `YYYY-MM-DD` format.
+    </ResponseField>
+
+    <ResponseField name="to" type="date">
+      The actual end date of the range answered after any 31-day cap is applied, in `YYYY-MM-DD` format.
+    </ResponseField>
+
+    <ResponseField name="duration_minutes" type="integer">
+      The slot duration used to compute availability, in minutes.
+    </ResponseField>
+
+    <ResponseField name="timezone" type="string">
+      The host's configured timezone (e.g. `"Europe/Brussels"`). All `label` values in the slots are rendered in this timezone.
+    </ResponseField>
+
+    <ResponseField name="service" type="string | null">
+      The slug of the service this availability is scoped to, or `null` when returning general availability.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "data": {
+    "2026-08-17": [
+      {
+        "start": "2026-08-17T08:00:00+00:00",
+        "end": "2026-08-17T08:30:00+00:00",
+        "label": "10:00"
+      },
+      {
+        "start": "2026-08-17T08:30:00+00:00",
+        "end": "2026-08-17T09:00:00+00:00",
+        "label": "10:30"
+      }
+    ],
+    "2026-08-19": [
+      {
+        "start": "2026-08-19T12:00:00+00:00",
+        "end": "2026-08-19T12:30:00+00:00",
+        "label": "14:00"
+      }
+    ]
+  },
+  "meta": {
+    "from": "2026-08-17",
+    "to": "2026-08-24",
+    "duration_minutes": 30,
+    "timezone": "Europe/Brussels",
+    "service": "discovery-call"
+  }
+}
+```
+
+<Tip>
+  Always scope your request to a specific service using the `service` parameter when you know which offering you're booking. General availability merges all services together and may show slots that are actually unavailable for the specific service your user has chosen.
+</Tip>
+
+## Errors
+
+| Status | Meaning |
+| --- | --- |
+| `401` | Missing or invalid API key. |
+| `403` | Your API key does not have the `availability.read` scope. |
+| `404` | The value passed to `service` does not match any known service slug or booking URL. |
+| `422` | One or more query parameters failed validation (e.g. `duration` outside 15–180, or `to` before `from`). |
+| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

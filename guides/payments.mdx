@@ -1,0 +1,83 @@
+---
+title: "Collect payments at booking"
+sidebarTitle: "Payments"
+description: "Charge for any service with iDEAL, Bancontact or card. Payment is collected at booking, before the slot is confirmed."
+---
+
+Charge for any service, with payment taken at booking. The slot is only confirmed and added to both calendars once payment goes through. No unconfirmed bookings sitting on your calendar.
+
+## Accepted payment methods
+
+Clients pay at booking with:
+
+- **iDEAL**. Direct bank transfer, popular in the Netherlands.
+- **Bancontact**. Widely used in Belgium.
+- **Credit or debit card**. Visa, Mastercard and other major networks.
+
+Payment happens inline on your booking page. Clients don't need a Tikk account to pay.
+
+## Set a price on a service
+
+You can enable paid booking on any service independently.
+
+<Steps>
+  <Step title="Open your service">
+    In the dashboard, go to **Services** and click the one to make paid, or create a new one.
+  </Step>
+  <Step title="Enable Paid booking and set a price">
+    Switch on **Paid booking** and enter an amount.
+  </Step>
+  <Step title="Pick a currency">
+    Match the currency to your payout account. Clients see the price in that currency.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The booking form now includes a payment step.
+  </Step>
+</Steps>
+
+## Transaction fees
+
+| Plan | Transaction fee |
+| --- | --- |
+| Free | Platform fee per booking. |
+| Pro | **0%**. You keep 100% of each payment. |
+
+<Note>
+  Pro removes platform transaction fees. If you take paid bookings at any real volume, it usually pays for itself.
+</Note>
+
+## Payouts
+
+Once a payment is confirmed, funds are queued for transfer to your connected bank account. The calendar event and meeting link only go out after payment is captured. Never before.
+
+Connect your bank account under **Settings → Payouts** before publishing a paid service.
+
+## Booking payment states
+
+Every booking exposes a `payment` object:
+
+```json
+{
+  "payment": {
+    "status": "paid",
+    "amount": 5000,
+    "currency": "eur"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `status` | One of `none`, `pending`, `paid`, `failed` or `refunded`. |
+| `amount` | Amount in minor units. `5000` is €50.00. |
+| `currency` | ISO 4217 code, e.g. `eur`. |
+
+`pending` means checkout started but wasn't completed. `failed` means the payment was declined. The slot is released automatically.
+
+<Tip>
+  Even a small price filters out low-commitment bookings and cuts no-shows. Hosts often see fewer cancellations after adding a small fee.
+</Tip>
+
+## Free meetings
+
+For a free service, set the price to €0 or leave **Paid booking** off. Free services return `payment.status = "none"` and skip the payment step.
