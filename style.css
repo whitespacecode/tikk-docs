@@ -1,3 +1,7 @@
 #topbar-cta-button span.bg-primary-dark {
   background: #000 !important;
 }
+
+.img[alt~="logo"] {
+    height: 40px;
+}
