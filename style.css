@@ -2,6 +2,6 @@
   background: #000 !important;
 }
 
-.img[alt~="logo"] {
-    height: 40px;
+img[alt~="logo"] {
+    height: 40px !important;
 }
