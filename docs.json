@@ -116,5 +116,11 @@
   },
   "background": {
     "decoration": "grid"
+  },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_pC7W69jal6F4Dq8c20pId4jqyuaLa4JcdNqH631vEQ",
+      "sessionRecording": true
+    }
   }
 }
