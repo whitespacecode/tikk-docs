@@ -1,65 +1,83 @@
 ---
 title: "Manual approval"
 sidebarTitle: "Manual approval"
-description: "Review each request before it hits your calendar. See the booker's name, email and topic upfront."
+description: "Review each request before it reaches your calendar. See who's asking and why, before you commit the time."
 ---
 
-With manual approval on, booking requests arrive as cards in your dashboard. You see the booker's name, email and topic before anything is confirmed. Nothing lands on your calendar until you accept.
+With manual approval on, booking requests wait in your Inbox instead of confirming themselves. You see the booker's name, email and topic before anything reaches your calendar and nothing is confirmed until you accept.
 
 <Note>
-  Manual approval is a **Pro feature**. [Start a 7-day free trial](https://app.tikk.chat/register) to enable it.
+  Manual approval is a **Pro feature**. On the Free plan every booking is
+  accepted automatically. [Start a 7-day free
+  trial](https://app.tikk.chat/register) to enable it.
 </Note>
 
-## Enable manual approval
+## Turn it on
 
-You can set it per service, so you can mix auto-confirmed and approval-required offerings on the same account.
+There are two levels and the more specific one wins.
 
-<Steps>
-  <Step title="Open the service">
-    Go to **Services** and click the one you want to update.
-  </Step>
-  <Step title="Select Manual approval">
-    In **Booking confirmation**, switch from **Automatic** to **Manual approval**.
-  </Step>
-  <Step title="Save">
-    Click **Save**. New requests for this service now start as `pending`.
-  </Step>
-</Steps>
+**For your whole account**, use the approval switch at the top of your **Inbox**: **Auto** confirms everything, **Manual** sends everything to you first.
+
+**For one service**, open it and go to **Advanced → Auto-accept bookings**. A service can confirm immediately, require approval or follow your account setting. That's how you keep a free intro call instant while reviewing every paid engagement.
 
 ## The approval flow
 
-1. **Booker submits the form**. They pick a slot, fill in details and click Book. For paid services, payment is collected and held pending your decision.
-2. **Status is `pending`**. The slot is held. No calendar event yet.
-3. **You get a notification**. Email plus a dashboard notification with name, email and topic.
-4. **You review**. Open the card in your dashboard for the full details.
-5. **Accept or decline:**
-   - **Accept**. Status becomes `accepted`. A calendar event is created and both parties get a meeting link.
-   - **Decline**. Status becomes `declined`. You can add a reason. The booker is emailed and any held payment is released or refunded.
+<Steps>
+  <Step title="Someone requests a time">
+    They pick a slot and fill in their details. The slot is held. Nothing is on
+    your calendar and, for paid services, nothing has been charged.
+  </Step>
+  <Step title="The request sits as pending">
+    You get an email and it appears in your Inbox with their name, email and
+    topic.
+  </Step>
+  <Step title="You accept or decline">Open the request and decide.</Step>
+</Steps>
 
-## When to use it
+What follows depends on the service:
+
+- **Free service, accepted.** Confirmed immediately. The calendar event is created and you both get the meeting details.
+- **Paid service, accepted.** Tikk emails the booker a payment link. The booking is confirmed once they pay — so an accepted paid request isn't a confirmed meeting until the money is in.
+- **Declined.** The booker is emailed and the slot reopens. Nothing was charged, so there's nothing to refund.
+
+<Warning>
+  Requests don't wait forever. A pending request whose slot time has passed is
+  declined automatically and the requester is told. Leave requests unanswered
+  and you'll lose bookings you'd have wanted — the automatic decline is a
+  cleanup, not a safety net.
+</Warning>
+
+## When it's worth it
 
 <CardGroup cols={2}>
   <Card title="High-value consulting" icon="briefcase">
-    Only take discovery calls with prospects who are a fit. Check the topic before committing a slot.
+    Read the topic before committing a slot to someone who may not be a fit.
   </Card>
 
-  <Card title="Coaching intake" icon="heart">
-    Check alignment between your approach and the client's goals before session one.
-  </Card>
+<Card title="Coaching intake" icon="heart">
+  Check alignment between your approach and the client's goals before session
+  one.
+</Card>
 
-  <Card title="Selective hiring" icon="user-check">
-    Screen candidates with a short prompt before booking a formal interview.
-  </Card>
+<Card title="Selective hiring" icon="user-check">
+  Screen candidates with a short prompt before booking a formal interview.
+</Card>
 
-  <Card title="Paid consultations" icon="dollar-sign">
-    Agree scope and expectations upfront. Avoid disputes later.
+  <Card title="Limited capacity" icon="clock">
+    When you only have room for a few engagements, decide which ones they are.
   </Card>
 </CardGroup>
 
+The trade-off is real: every approval step is a delay for the person booking and some of them will go elsewhere. Turn it on where the time is expensive, leave it off where speed matters.
+
 <Tip>
-  Pair manual approval with a **Topic** or **Tell me about your situation** prompt in your booking form. Written context makes approvals faster and stops you walking in cold.
+  Manual approval works best when the booking form asks for something worth
+  reading. A prompt like "what would you like to cover?" gives you the context
+  to decide quickly instead of accepting blind.
 </Tip>
 
 <Info>
-  Track pending requests via `GET /api/v1/bookings?status=pending`. See [List Bookings](/api-reference/bookings/list-bookings).
+  Tracking pending requests programmatically? `GET
+  /api/v1/bookings?status=pending`. See [List
+  Bookings](/api-reference/bookings/list-bookings).
 </Info>

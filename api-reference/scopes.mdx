@@ -8,11 +8,11 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 ## Available scopes
 
-| Scope | Required for | Grants |
-| --- | --- | --- |
-| `profile.read` | `GET /profile` | Public profile, username, and active services |
-| `availability.read` | `GET /availability` | Available time slots |
-| `bookings.read` | `GET /bookings`, `GET /bookings/{id}` | Existing bookings |
+| Scope               | Required for                          | Grants                                       |
+| ------------------- | ------------------------------------- | -------------------------------------------- |
+| `profile.read`      | `GET /profile`                        | Public profile, username and active services |
+| `availability.read` | `GET /availability`                   | Available time slots                         |
+| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}` | Existing bookings                            |
 
 ## API keys
 
@@ -45,5 +45,7 @@ If you call an endpoint without the required scope, the API responds with `403 F
 This response is the same whether the scope was never requested (OAuth token) or the credential is otherwise valid. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
 
 <Tip>
-  Request the minimum scopes your integration needs. Fewer scopes means smaller impact if a token leaks. An attacker with a `profile.read`-only token can't reach bookings data.
+  Request the minimum scopes your integration needs. Fewer scopes means smaller
+  impact if a token leaks. An attacker with a `profile.read`-only token can't
+  reach bookings data.
 </Tip>

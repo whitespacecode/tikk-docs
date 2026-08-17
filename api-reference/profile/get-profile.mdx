@@ -4,7 +4,7 @@ sidebarTitle: "GET /profile"
 description: "Fetch your public profile. Username, bio, avatar and all active services with slugs and embed URLs, in one request."
 ---
 
-The `/profile` endpoint returns everything that makes up your public Tikk presence: your handle, display name, bio, branding assets, and the full list of services you have published. Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
+The `/profile` endpoint returns everything that makes up your public Tikk presence: your handle, display name, bio, branding assets and the full list of services you have published. Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
 
 ## Endpoint
 
@@ -28,7 +28,8 @@ This endpoint accepts no query parameters.
 ## Response schema
 
 <ResponseField name="username" type="string | null">
-  Your Tikk handle. Use this as the `data-domain` value in the embed script. `null` until you claim a username.
+  Your Tikk handle. Use this as the `data-domain` value in the embed script.
+  `null` until you claim a username.
 </ResponseField>
 
 <ResponseField name="name" type="string | null">
@@ -52,11 +53,13 @@ This endpoint accepts no query parameters.
 </ResponseField>
 
 <ResponseField name="profile_url" type="string | null">
-  Direct link to your public booking page (e.g. `https://tikk.chat/joeri`). `null` until you pick a username.
+  Direct link to your public booking page (e.g. `https://tikk.chat/joeri`).
+  `null` until you pick a username.
 </ResponseField>
 
 <ResponseField name="profile_complete" type="boolean">
-  Whether your profile is ready to receive bookings. `false` while no username has been claimed.
+  Whether your profile is ready to receive bookings. `false` while no username
+  has been claimed.
 </ResponseField>
 
 <ResponseField name="services" type="array">
@@ -74,6 +77,7 @@ This endpoint accepts no query parameters.
     <ResponseField name="embed_url" type="string | null">
       Fully-qualified booking URL for this service (e.g. `https://tikk.chat/joeri/discovery-call`). `null` until you pick a username.
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -105,17 +109,21 @@ This endpoint accepts no query parameters.
 ```
 
 <Note>
-  Use the `username` field as the `data-domain` attribute in the Tikk embed script to surface your booking page inline on any website. See the [embed guide](/embed) for the full setup instructions.
+  Use the `username` field as the `data-domain` attribute in the Tikk embed
+  script to surface your booking page inline on any website. See the [embed
+  guide](/embed) for the full setup instructions.
 </Note>
 
 <Note>
-  `profile_complete` is `false` and both `profile_url` and all `embed_url` values are `null` until you claim a username in your Tikk account settings. Bookings cannot be received while `profile_complete` is `false`.
+  `profile_complete` is `false` and both `profile_url` and all `embed_url`
+  values are `null` until you claim a username in your Tikk account settings.
+  Bookings cannot be received while `profile_complete` is `false`.
 </Note>
 
 ## Errors
 
-| Status | Meaning |
-|--------|---------|
-| `401` | Missing or invalid API key. |
-| `403` | Your API key does not have the `profile.read` scope. |
-| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid API key.                                                                     |
+| `403`  | Your API key does not have the `profile.read` scope.                                            |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

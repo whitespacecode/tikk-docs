@@ -24,27 +24,40 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
 ## Query parameters
 
 <ParamField query="service" type="string">
-  Service slug (e.g. `discovery-call`) or the full booking URL (e.g. `https://tikk.chat/joeri/discovery-call`). When omitted, the response reflects your general availability across all services. Supplying an unknown value returns `404`. Maximum 100 characters.
+  Service slug (e.g. `discovery-call`) or the full booking URL (e.g.
+  `https://tikk.chat/joeri/discovery-call`). When omitted, the response reflects
+  your general availability across all services. Supplying an unknown value
+  returns `404`. Maximum 100 characters.
 </ParamField>
 
 <ParamField query="from" type="date">
-  First day of the requested range in `YYYY-MM-DD` format. Defaults to today. Past days never return slots regardless of what you pass here.
+  First day of the requested range in `YYYY-MM-DD` format. Defaults to today.
+  Past days never return slots regardless of what you pass here.
 </ParamField>
 
 <ParamField query="to" type="date">
-  Last day of the requested range in `YYYY-MM-DD` format. Defaults to 7 days after `from`. The range is capped at 31 days. Any wider window is silently clamped, and `meta.to` in the response tells you the actual end date that was answered.
+  Last day of the requested range in `YYYY-MM-DD` format. Defaults to 7 days
+  after `from`. The range is capped at 31 days. Any wider window is silently
+  clamped and `meta.to` in the response tells you the actual end date that was
+  answered.
 </ParamField>
 
 <ParamField query="duration" type="integer">
-  Desired slot length in minutes. Must be between `15` and `180`. Defaults to `30`. Slots shorter than your configured buffer or longer than the service's maximum duration may reduce or eliminate available slots.
+  Desired slot length in minutes. Must be between `15` and `180`. Defaults to
+  `30`. Slots shorter than your configured buffer or longer than the service's
+  maximum duration may reduce or eliminate available slots.
 </ParamField>
 
 <Note>
-  Days with zero free slots are omitted from `data`. An empty `data` object is not an error. It just means no slots are available in that range.
+  Days with zero free slots are omitted from `data`. An empty `data` object is
+  not an error. It just means no slots are available in that range.
 </Note>
 
 <Note>
-  The date range is capped at 31 days. If you pass a `to` that is more than 31 days after `from`, the API silently clamps the window and reports the actual end date in `meta.to`. Always read `meta.to` rather than echoing back your own input.
+  The date range is capped at 31 days. If you pass a `to` that is more than 31
+  days after `from`, the API silently clamps the window and reports the actual
+  end date in `meta.to`. Always read `meta.to` rather than echoing back your own
+  input.
 </Note>
 
 ## Response schema
@@ -68,6 +81,7 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
     <ResponseField name="spots_remaining" type="integer">
       Only present for group services that publish remaining capacity. Omitted on standard one-to-one services.
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -92,8 +106,9 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
     </ResponseField>
 
     <ResponseField name="service" type="string | null">
-      The slug of the service this availability is scoped to, or `null` when returning general availability.
+      The slug of the service this availability is scoped to or `null` when returning general availability.
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -133,15 +148,18 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
 ```
 
 <Tip>
-  Always scope your request to a specific service using the `service` parameter when you know which offering you're booking. General availability merges all services together and may show slots that are actually unavailable for the specific service your user has chosen.
+  Always scope your request to a specific service using the `service` parameter
+  when you know which offering you're booking. General availability merges all
+  services together and may show slots that are actually unavailable for the
+  specific service your user has chosen.
 </Tip>
 
 ## Errors
 
-| Status | Meaning |
-| --- | --- |
-| `401` | Missing or invalid API key. |
-| `403` | Your API key does not have the `availability.read` scope. |
-| `404` | The value passed to `service` does not match any known service slug or booking URL. |
-| `422` | One or more query parameters failed validation (e.g. `duration` outside 15–180, or `to` before `from`). |
-| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |
+| Status | Meaning                                                                                                |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| `401`  | Missing or invalid API key.                                                                            |
+| `403`  | Your API key does not have the `availability.read` scope.                                              |
+| `404`  | The value passed to `service` does not match any known service slug or booking URL.                    |
+| `422`  | One or more query parameters failed validation (e.g. `duration` outside 15–180 or `to` before `from`). |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header.        |

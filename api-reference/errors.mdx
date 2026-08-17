@@ -8,13 +8,13 @@ The Tikk API uses standard HTTP status codes to signal success and failure. Ever
 
 ## Error codes
 
-| Status | When it occurs |
-| --- | --- |
-| `401 Unauthorized` | No credential was sent, or the credential is revoked, expired, or unrecognized |
-| `403 Forbidden` | The credential is valid but lacks the required scope for this endpoint |
-| `404 Not Found` | The requested resource does not exist on your account |
-| `422 Unprocessable Entity` | One or more query parameters failed validation |
-| `429 Too Many Requests` | You have sent more than 60 requests in a 60-second window |
+| Status                     | When it occurs                                                               |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| `401 Unauthorized`         | No credential was sent or the credential is revoked, expired or unrecognized |
+| `403 Forbidden`            | The credential is valid but lacks the required scope for this endpoint       |
+| `404 Not Found`            | The requested resource does not exist on your account                        |
+| `422 Unprocessable Entity` | One or more query parameters failed validation                               |
+| `429 Too Many Requests`    | You have sent more than 60 requests in a 60-second window                    |
 
 ## Standard error body
 
@@ -36,9 +36,7 @@ When a request fails validation, the response body includes an `errors` object k
 {
   "message": "The to field must be a date after or equal to from.",
   "errors": {
-    "to": [
-      "The to field must be a date after or equal to from."
-    ]
+    "to": ["The to field must be a date after or equal to from."]
   }
 }
 ```
@@ -65,7 +63,10 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
       return response;
     }
 
-    const retryAfter = parseInt(response.headers.get("Retry-After") ?? "60", 10);
+    const retryAfter = parseInt(
+      response.headers.get("Retry-After") ?? "60",
+      10,
+    );
     console.warn(`Rate limited. Retrying in ${retryAfter}s...`);
     await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
   }
@@ -75,7 +76,11 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 ```
 
 <Tip>
-  In production integrations, combine the `Retry-After` header with exponential backoff and jitter so that multiple instances of your service do not all retry simultaneously after a rate-limit window resets. A simple rule: always wait at least as long as `Retry-After` specifies, then add a random delay before the next attempt.
+  In production integrations, combine the `Retry-After` header with exponential
+  backoff and jitter so that multiple instances of your service do not all retry
+  simultaneously after a rate-limit window resets. A simple rule: always wait at
+  least as long as `Retry-After` specifies, then add a random delay before the
+  next attempt.
 </Tip>
 
 ## 404 and user isolation

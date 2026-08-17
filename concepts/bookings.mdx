@@ -1,147 +1,58 @@
 ---
 title: "Bookings"
 sidebarTitle: "Bookings"
-description: "Every booking has a lifecycle. Statuses, fields, payment states and how to read them."
+description: "What a booking holds, the statuses it moves through and the things that change it without you doing anything."
 ---
 
-Every booking runs through a lifecycle from request to meeting, decline or cancel. The `status` field is the source of truth for where a booking sits at any moment.
+A booking is one person's claim on one of your slots. Every booking arrives in your **Inbox**, carries the booker's details and the topic they wrote and moves through a small set of statuses from request to meeting.
 
-## Booking statuses
+## What a booking holds
 
-| Status | Meaning |
-| --- | --- |
-| `pending` | Request received. In **manual approval mode** the meeting is waiting on your approval. In standard mode, a booking briefly sits here before confirming. |
-| `accepted` | Confirmed. Both parties are committed to the time. |
-| `declined` | You declined the request. The booker is notified and the slot is freed. |
-| `cancelled` | Cancelled after it was accepted. Either party can trigger this. |
+Beyond the time and the service, each booking records who booked it and their email address, the topic they described, where the meeting happens and its link, any payment and — for group services — the other attendees.
+
+You can also add **notes** to a booking. Notes are yours alone; the booker never sees them.
+
+## Statuses
+
+| Status        | What it means                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| **Pending**   | The request is in, the slot is held, nothing is on your calendar yet. Waiting on you or on payment. |
+| **Accepted**  | Confirmed. The calendar event exists and both sides have the details.                               |
+| **Declined**  | You turned it down. The booker is emailed and the slot reopens.                                     |
+| **Cancelled** | Called off by you after it was accepted.                                                            |
+
+While a paid booking is waiting on money, the Inbox shows it as **Awaiting payment** or **Payment failed** if the payment didn't go through. Both are pending bookings that haven't cleared their payment step.
 
 <Info>
-  Manual approval mode (every booking starts `pending` until you accept or decline) is **Pro only**. On the free tier, bookings go straight to `accepted`.
+  Whether a booking stops at **Pending** at all is up to you. On the Free plan
+  everything is accepted automatically. On Pro you can require manual approval,
+  account-wide or per service. See [Manual approval](/guides/manual-approval).
 </Info>
 
-## Booking fields
+## Payments on a booking
 
-The booking object returned by the API contains the following fields:
+A booking's payment is in one of five states: **none** for free meetings, **pending** while checkout is unfinished, **paid**, **failed** or **refunded**.
 
-<ResponseField name="id" type="string">
-  Unique ID for the booking. Use it to retrieve or reference the booking in API calls.
-</ResponseField>
+<Warning>
+  A paid booking that hasn't been paid yet has two different links on it and
+  they are not interchangeable. One is the **payment link**, where the booker
+  completes checkout. The other is the **meeting link**, the video call itself.
+  Sending someone the payment link when they asked how to join is a common
+  mix-up.
+</Warning>
 
-<ResponseField name="status" type="string">
-  Current state. One of `pending`, `accepted`, `declined` or `cancelled`. See [Booking statuses](#booking-statuses).
-</ResponseField>
+## What happens without you
 
-<ResponseField name="created_at" type="string">
-  When the request was submitted, as a UTC ISO 8601 timestamp (e.g. `2025-09-15T08:42:00Z`).
-</ResponseField>
+Two things change bookings on their own:
 
-<ResponseField name="scheduled_at" type="string | null">
-  When the meeting starts, as a UTC ISO 8601 timestamp (e.g. `2025-09-15T10:00:00Z`). `null` if not yet scheduled.
-</ResponseField>
+- **Reminders.** 24 hours before an accepted meeting, both you and the attendee get an email. You can turn your own off under [notifications](/guides/notifications).
+- **Expired requests are declined.** A pending request whose slot time has come and gone is declined automatically, twice a day and the requester is told. It stops stale requests sitting in your Inbox forever and stops anyone accepting a meeting that already happened.
 
-<ResponseField name="duration_minutes" type="integer">
-  Meeting length in minutes, as set on the service at booking time.
-</ResponseField>
-
-<ResponseField name="topic" type="string">
-  Free-text description of what the booker wants to cover.
-</ResponseField>
-
-<ResponseField name="service" type="object">
-  <Expandable title="Service fields">
-    <ResponseField name="slug" type="string">
-      URL-safe ID of the booked service (e.g. `discovery-call`). Last path segment of the booking URL.
-    </ResponseField>
-
-    <ResponseField name="title" type="string">
-      Human name of the service at booking time.
-    </ResponseField>
-
-    <ResponseField name="is_group" type="boolean">
-      `true` for group services (multiple attendees share the slot).
-    </ResponseField>
-
-    <ResponseField name="max_attendees" type="integer | null">
-      Seat cap for group services. `null` if no cap or not a group service.
-    </ResponseField>
-
-    <ResponseField name="is_personal_invite" type="boolean">
-      `true` if this is a private personal invite not listed on your public page.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="booker" type="object">
-  Name and email of the person who made the booking.
-</ResponseField>
-
-<ResponseField name="attendees" type="array">
-  Additional attendees for group bookings, each with a name and email. Empty for one-to-one bookings.
-</ResponseField>
-
-<ResponseField name="location" type="object">
-  <Expandable title="Location fields">
-    <ResponseField name="type" type="string">
-      One of `video`, `in_person` or `none`.
-    </ResponseField>
-
-    <ResponseField name="label" type="string">
-      Human description of the location shown to both parties.
-    </ResponseField>
-
-    <ResponseField name="address" type="string">
-      Physical address for `in_person` meetings. Empty otherwise.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="conference_link" type="string | null">
-  Video call URL when location is `video`. `null` for in-person or none.
-</ResponseField>
-
-<ResponseField name="payment" type="object">
-  <Expandable title="Payment fields">
-    <ResponseField name="status" type="string">
-      One of `none`, `pending`, `paid`, `failed` or `refunded`. Free meetings always return `none`.
-    </ResponseField>
-
-    <ResponseField name="amount" type="integer">
-      Amount in **minor currency units** (e.g. `5000` is €50.00). See [Payment info](#payment-info).
-    </ResponseField>
-
-    <ResponseField name="currency" type="string">
-      ISO 4217 code (e.g. `EUR`, `USD`).
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="cancellation_reason" type="string | null">
-  Reason given on decline or cancel. `null` while active.
-</ResponseField>
-
-<ResponseField name="notes" type="string | null">
-  Any extra notes from you or the booker.
-</ResponseField>
-
-## Payment info
-
-Amounts are in **minor currency units**, the smallest denomination of the currency. For EUR and USD, divide by 100.
-
-```text
-amount: 5000, currency: "EUR"  →  €50.00
-amount: 2500, currency: "USD"  →  $25.00
-amount: 0,    currency: "EUR"  →  free
-```
-
-Free services always return `payment.status = "none"` and `payment.amount = 0`. `pending` means the invoice is issued but not yet paid.
+Everything else — accepting, declining, rescheduling, cancelling — is yours to do. See [Manage bookings](/guides/manage-bookings).
 
 <Note>
-  For paid bookings that haven't been paid yet, the booking object also has a `meeting_link` field. That's the **checkout link** the booker uses to pay. It's not the same as `conference_link`, which is the video URL for the meeting itself. Don't present `meeting_link` as where the meeting happens.
+  Reading bookings programmatically? [List
+  Bookings](/api-reference/bookings/list-bookings) is paginated with status and
+  date filters and [Get Booking](/api-reference/bookings/get-booking) returns
+  one in full.
 </Note>
-
-<Info>
-  Fetch bookings via the API:
-
-  - [List Bookings](/api-reference/bookings/list-bookings). Paginated list with status and date filters.
-  - [Get Booking](/api-reference/bookings/get-booking). Full booking object for a single ID.
-</Info>

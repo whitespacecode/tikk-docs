@@ -48,9 +48,20 @@
             "group": "Guides",
             "pages": [
               "guides/calendar-sync",
-              "guides/payments",
+              "guides/availability-setup",
+              "guides/meeting-locations",
               "guides/manual-approval",
-              "guides/group-bookings"
+              "guides/manage-bookings",
+              "guides/group-bookings",
+              "guides/personal-invites",
+              "guides/payments",
+              "guides/notifications"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "guides/integrations"
             ]
           },
           {

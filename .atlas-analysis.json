@@ -1,7 +1,7 @@
 {
   "projectType": "saas",
   "projectName": "Tikk",
-  "projectDescription": "Tikk is a free scheduling platform that lets professionals create a personal booking page, sync calendars, collect payments, and manage bookings — with a read-only REST API for integrations.",
+  "projectDescription": "Tikk is a free scheduling platform that lets professionals create a personal booking page, sync calendars, collect payments and manage bookings — with a read-only REST API for integrations.",
   "theme": "luma",
   "primaryColor": "#848484",
   "lightColor": "#151515",
@@ -13,11 +13,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": [
-              "introduction",
-              "quickstart",
-              "embed"
-            ]
+            "pages": ["introduction", "quickstart", "embed"]
           },
           {
             "group": "Core Concepts",
@@ -39,10 +35,7 @@
           },
           {
             "group": "Plans & Billing",
-            "pages": [
-              "billing/plans",
-              "billing/faq"
-            ]
+            "pages": ["billing/plans", "billing/faq"]
           }
         ]
       },

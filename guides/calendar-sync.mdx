@@ -1,60 +1,85 @@
 ---
 title: "Connect your calendars"
 sidebarTitle: "Calendar sync"
-description: "Sync Google Calendar, Outlook, Apple iCloud or any iCal feed. Every connected calendar is checked before a slot is shown."
+description: "Connect Google, Outlook or Apple iCloud. Every connected calendar is checked before a slot is offered, so you can't be double booked."
 ---
 
-Tikk reads every connected calendar before showing slots. A busy event on any calendar (a dentist, a blocked focus hour, an existing call) removes that slot from your booking page. Nothing to configure per event. Protection is always on.
+Tikk checks every connected calendar before showing a slot. A dentist appointment, a blocked focus hour, a meeting someone else put in your diary — any of them removes that slot from your booking page. There's nothing to configure per event and nothing to remember. It's always on.
 
 ## Supported calendars
 
-<CardGroup cols={2}>
-  <Card title="Google Calendar" icon="google">
-    Connect one or more Google accounts. Tikk checks all selected calendars in real time.
+<CardGroup cols={3}>
+  <Card title="Google Calendar" icon="calendar">
+    Connect one or more Google accounts.
   </Card>
 
-  <Card title="Microsoft Outlook" icon="microsoft">
-    Works with personal Microsoft accounts and Microsoft 365 work or school accounts.
-  </Card>
+<Card title="Microsoft Outlook" icon="calendar">
+  Personal Microsoft accounts and Microsoft 365 work or school accounts.
+</Card>
 
-  <Card title="Apple iCloud" icon="apple">
-    Connect using an app-specific password from your Apple ID settings.
-  </Card>
-
-  <Card title="iCal feed" icon="calendar">
-    Paste any valid iCal feed URL. Fastmail, Proton Calendar, Airbnb or anything that publishes an `.ics` feed.
+  <Card title="Apple iCloud" icon="calendar">
+    Connect with an app-specific password from your Apple ID. Your credentials are stored encrypted.
   </Card>
 </CardGroup>
+
+<Note>
+  Teamleader Focus and HubSpot also feed their meetings into your busy times,
+  alongside your calendars. See [CRM integrations](/guides/integrations).
+</Note>
 
 ## Connect a calendar
 
 <Steps>
-  <Step title="Open Settings → Calendars">
-    In your dashboard, click your avatar and select **Settings**. Choose **Calendars** from the left menu.
+  <Step title="Open Calendar">
+    Click **Calendar** in the sidebar to reach your calendar connections.
   </Step>
-  <Step title="Click Add Calendar and pick a provider">
-    Choose Google, Outlook, Apple iCloud or iCal feed.
+  <Step title="Add a connection">
+    Under **Add New Connection**, pick Google, Outlook or Apple.
   </Step>
   <Step title="Authorize Tikk">
-    Complete the OAuth flow or paste your credentials. Tikk requests **read and write** access. Read checks your availability; write adds confirmed bookings to your primary calendar.
+    Complete the sign-in or for Apple paste your Apple ID and app-specific
+    password. Tikk asks for **read and write** access: read to know when you're
+    busy, write to put confirmed bookings on your calendar.
   </Step>
-  <Step title="Repeat for each calendar">
-    Connect as many as you need. Tikk checks all of them at once when computing availability.
+  <Step title="Choose which calendars count">
+    One account often holds several calendars. Click **Manage calendars** on a
+    connection to pick which of them block your availability. Only the ones you
+    activate are checked.
   </Step>
 </Steps>
 
 <Note>
-  Free supports **1 calendar**. Upgrade to Pro for unlimited connections.
+  The Free plan allows **1 active calendar connection**. Pro is unlimited.
 </Note>
+
+## Connection states
+
+| State                     | Meaning                                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Synced**                | Working normally and being checked.                                                                                                                  |
+| **Paused**                | Connected but not checked. Free-plan connections beyond the first sit here.                                                                          |
+| **Authorization expired** | The provider revoked access, usually after a password change. Click **Reconnect**; until you do, events from this calendar aren't blocking anything. |
+
+<Warning>
+  An expired connection is the one failure mode that can cause a double booking,
+  because Tikk can no longer see that calendar's events. The dashboard flags it
+  — reconnect promptly.
+</Warning>
+
+If you move from Pro back to Free with several connections, nothing is deleted. Your oldest connection stays active and the rest are paused until you upgrade.
 
 ## How it works
 
-Once calendars are connected, Tikk checks all of them in real time whenever someone loads your booking page. Any overlap with any event (even one minute) hides the slot. No manual sync, no refresh, no polling delay.
+Once connected, Tikk checks your calendars in real time whenever someone opens your booking page. Any overlap with any event, even by a minute, hides the slot. No manual sync, no polling delay.
 
 <Tip>
-  Connect your personal calendar too, even if you only take work bookings. Personal event details stay private. Only the busy times block slots.
+  Connect your personal calendar too, even if you only take work bookings. Tikk
+  reads the times you're busy, not what you're doing — personal event details
+  stay private, they just stop people booking over your evening.
 </Tip>
 
-## Calendar write-back
+## Bookings on your calendar
 
-When a booking is confirmed, Tikk adds an event to your **primary calendar**. It includes the meeting title, the booker's name and the auto-generated meeting link (Google Meet, Teams or Jitsi). Nothing to copy over.
+When a booking is confirmed, Tikk writes an event with the meeting title, the booker's name and the meeting link to **every** connected calendar, not just one. You don't have to copy anything across and whichever calendar you happen to be looking at shows the booking.
+
+Reschedule or cancel the booking in Tikk and that calendar event is updated or removed to match. See [Manage bookings](/guides/manage-bookings).

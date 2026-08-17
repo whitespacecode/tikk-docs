@@ -24,19 +24,23 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
 ## Query parameters
 
 <ParamField query="status" type="string">
-  Filter to bookings in a specific state. Accepted values: `pending`, `accepted`, `declined`, `cancelled`. Omit to return bookings of all statuses.
+  Filter to bookings in a specific state. Accepted values: `pending`,
+  `accepted`, `declined`, `cancelled`. Omit to return bookings of all statuses.
 </ParamField>
 
 <ParamField query="from" type="date-time">
-  Return only bookings with a `scheduled_at` at or after this moment. Provide an ISO 8601 date-time value (e.g. `2026-08-01T00:00:00Z`).
+  Return only bookings with a `scheduled_at` at or after this moment. Provide an
+  ISO 8601 date-time value (e.g. `2026-08-01T00:00:00Z`).
 </ParamField>
 
 <ParamField query="to" type="date-time">
-  Return only bookings with a `scheduled_at` at or before this moment. Must not precede `from` when both are supplied.
+  Return only bookings with a `scheduled_at` at or before this moment. Must not
+  precede `from` when both are supplied.
 </ParamField>
 
 <ParamField query="order" type="string">
-  Sort direction on `scheduled_at`. Accepted values: `asc`, `desc`. Defaults to `desc` (newest first).
+  Sort direction on `scheduled_at`. Accepted values: `asc`, `desc`. Defaults to
+  `desc` (newest first).
 </ParamField>
 
 <ParamField query="per_page" type="integer">
@@ -144,7 +148,7 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
 
       <Expandable title="location fields">
         <ResponseField name="type" type="string | null">
-          One of `video`, `in_person`, `none`, or `null`.
+          One of `video`, `in_person`, `none` or `null`.
         </ResponseField>
 
         <ResponseField name="label" type="string | null">
@@ -182,6 +186,7 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
         </ResponseField>
       </Expandable>
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -204,6 +209,7 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
     <ResponseField name="next" type="uri | null">
       URL of the next page. `null` when you are on the last page.
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -242,6 +248,7 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
     <ResponseField name="links" type="array">
       Array of numbered pager link objects for building a page-number UI.
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -305,14 +312,16 @@ curl "https://app.tikk.chat/api/v1/bookings?status=accepted&order=asc" \
 ```
 
 <Tip>
-  Combine `status=accepted`, a `from` timestamp and `order=asc` to walk your upcoming confirmed schedule in chronological order. Ideal for syncing bookings to a calendar or a "what's next" dashboard widget.
+  Combine `status=accepted`, a `from` timestamp and `order=asc` to walk your
+  upcoming confirmed schedule in chronological order. Ideal for syncing bookings
+  to a calendar or a "what's next" dashboard widget.
 </Tip>
 
 ## Errors
 
-| Status | Meaning |
-| --- | --- |
-| `401` | Missing or invalid API key. |
-| `403` | Your API key does not have the `bookings.read` scope. |
-| `422` | One or more query parameters failed validation (e.g. `to` precedes `from`, `per_page` outside 1–100, or an unrecognised `status` value). |
-| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |
+| Status | Meaning                                                                                                                                 |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid API key.                                                                                                             |
+| `403`  | Your API key does not have the `bookings.read` scope.                                                                                   |
+| `422`  | One or more query parameters failed validation (e.g. `to` precedes `from`, `per_page` outside 1–100 or an unrecognised `status` value). |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header.                                         |

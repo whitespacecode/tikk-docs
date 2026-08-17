@@ -27,16 +27,24 @@ Use the cards below to jump to each endpoint's reference page.
 
 <CardGroup cols={2}>
   <Card title="GET /profile" icon="user" href="/api-reference/profile/get-profile">
-    Retrieve your public profile, username, and active services.
+    Retrieve your public profile, username and active services.
   </Card>
 
-  <Card title="GET /availability" icon="calendar" href="/api-reference/availability/list-availability">
-    List your free time slots by day for a given date range.
-  </Card>
+<Card
+  title="GET /availability"
+  icon="calendar"
+  href="/api-reference/availability/list-availability"
+>
+  List your free time slots by day for a given date range.
+</Card>
 
-  <Card title="GET /bookings" icon="list" href="/api-reference/bookings/list-bookings">
-    Retrieve a paginated list of all bookings on your account.
-  </Card>
+<Card
+  title="GET /bookings"
+  icon="list"
+  href="/api-reference/bookings/list-bookings"
+>
+  Retrieve a paginated list of all bookings on your account.
+</Card>
 
   <Card title="GET /bookings/{id}" icon="bookmark" href="/api-reference/bookings/get-booking">
     Look up a single booking by its unique identifier.

@@ -1,54 +1,128 @@
 ---
-title: "Embed Tikk with one script tag"
+title: "Embed Tikk on your website"
 sidebarTitle: "Embed widget"
-description: "Add your booking calendar to any site with a script tag and the data-domain attribute. No iframe, no plugin."
+description: "Add your booking page to any site as an inline widget, a link that opens a pop-up or a floating button."
 ---
 
-The embed widget places your booking calendar inside any web page with a single `<script>` tag. It renders inline where you drop it. No iframe, no plugin, no layout changes. Visitors browse your services, pick a slot and book without leaving your site.
+The embed widget puts your booking page on your own website. Visitors browse your services, pick a slot and book without leaving your site.
 
-## Basic embed
+You can add it in three ways. All three use the same script tag, with `data-domain` set to your username.
 
-Drop this snippet into your HTML where you want the widget to appear. Replace `yourname` with your username.
+## Choose an embed type
 
-```html
-<script
-  async
-  src="https://tikk.chat/embed.js"
-  data-domain="yourname"
-></script>
-```
+<CardGroup cols={3}>
+  <Card title="Inline embed" icon="layout">
+    Your booking page sits directly in the page, where you place the snippet.
+  </Card>
 
-`data-domain` is your Tikk username. It's the same handle in your booking URL (`tikk.chat/yourname`) and the `username` field returned by `GET /api/v1/profile`.
+<Card title="Inline link" icon="link">
+  A text link or button that opens your booking page as a pop-up.
+</Card>
 
-## Embed a specific service
-
-To send visitors straight to one service, add `data-service` with the service's slug.
-
-```html
-<script
-  async
-  src="https://tikk.chat/embed.js"
-  data-domain="yourname"
-  data-service="discovery-call"
-></script>
-```
-
-The service slug is the URL-friendly ID for a service. A service named "Discovery Call" is usually `discovery-call`. You can view and edit the slug on the service page in your dashboard.
-
-## Find your username
-
-To fetch your username programmatically, call the profile endpoint:
-
-```http
-GET https://app.tikk.chat/api/v1/profile
-```
-
-The response includes a `username` field. Use that for `data-domain`. See [Get Profile](/api-reference/profile/get-profile) for the full schema.
-
-<Note>
-  The widget is responsive and adapts to its container. It also picks up your branding (colours and logo) so it matches your booking page.
-</Note>
+  <Card title="Floating button" icon="circle-dot">
+    A button fixed to a corner of the screen, on every page you add it to.
+  </Card>
+</CardGroup>
 
 <Tip>
-  Place the `<script>` tag exactly where you want the widget. It renders inline at that spot, so you can drop it into a landing page section, a contact page or anywhere else.
+  You don't have to write these by hand. Open **Services**, click **Embed** on a
+  service (or **Share → Embed** on your booking page), pick a type and copy the
+  generated snippet.
 </Tip>
+
+## Inline embed
+
+Drop this where you want the booking page to appear. Replace `yourname` with your username.
+
+```html
+<script async src="https://embed.tikk.chat" data-domain="yourname"></script>
+```
+
+The widget renders at that exact spot and resizes itself to fit its content, so it works inside a landing page section, a contact page or a sidebar.
+
+## Inline link
+
+Renders a link or button in the flow of your page. Clicking it opens your booking page in a pop-up over the current page.
+
+```html
+<script
+  async
+  src="https://embed.tikk.chat"
+  data-domain="yourname"
+  data-type="button-link"
+  data-buttontext="Schedule a meeting"
+  data-buttoncolor="#000000"
+></script>
+```
+
+Leave `data-buttoncolor` out and you get an underlined text link that inherits your site's font and colour. Include it and you get a solid button in that colour, with the label colour picked automatically for contrast.
+
+## Floating button
+
+Renders a pill-shaped button pinned to one corner of the viewport, on top of your page. Place the snippet once, anywhere in the `<body>`.
+
+```html
+<script
+  async
+  src="https://embed.tikk.chat"
+  data-domain="yourname"
+  data-type="button-floating"
+  data-buttontext="Schedule a meeting"
+  data-buttoncolor="#000000"
+  data-buttonposition="bottomRight"
+></script>
+```
+
+## Attributes
+
+| Attribute             | Applies to        | Values                                             | Default                                        |
+| --------------------- | ----------------- | -------------------------------------------------- | ---------------------------------------------- |
+| `data-domain`         | All               | Your username. **Required.**                       | —                                              |
+| `data-type`           | All               | `inline`, `button-link`, `button-floating`         | `inline`                                       |
+| `data-buttontext`     | Both button types | Any label                                          | `Schedule a meeting`                           |
+| `data-buttoncolor`    | Both button types | Hex colour, e.g. `#1a1a1a`                         | Text link (inline link) / `#000000` (floating) |
+| `data-buttonicon`     | Both button types | `none`, `tikk`, `calendar`, `clock`                | `none`                                         |
+| `data-buttonposition` | Floating button   | `bottomRight`, `bottomLeft`, `topRight`, `topLeft` | `bottomRight`                                  |
+| `data-content`        | All               | `minimal` hides the host panel (photo, name, bio)  | Host panel shown                               |
+
+<Note>
+  On the Free plan the button always carries the Tikk icon, whatever
+  `data-buttonicon` says. Customising the icon is a Pro feature and the check
+  happens on Tikk's side, so editing the attribute won't change it.
+</Note>
+
+Use `data-content="minimal"` when the surrounding page already introduces you and repeating your photo and bio inside the widget would be redundant:
+
+```html
+<script
+  async
+  src="https://embed.tikk.chat"
+  data-domain="yourname"
+  data-content="minimal"
+></script>
+```
+
+## No-script alternative
+
+Some site builders strip `<script>` tags. Notion, Webflow and similar tools accept a plain iframe instead:
+
+```html
+<iframe
+  src="https://tikk.chat/yourname?embed=1"
+  width="100%"
+  height="700"
+  frameborder="0"
+></iframe>
+```
+
+The script version is preferable where you can use it, because it resizes itself to its content. A plain iframe keeps whatever height you give it.
+
+<Note>
+  Your username is the handle in your booking URL (`tikk.chat/yourname`). It's
+  shown on your dashboard under **Booking Page**.
+</Note>
+
+<Card title="Branding on the widget" icon="palette" href="/billing/plans">
+  The widget picks up your booking page's branding. On Pro you can also remove
+  Tikk branding from it.
+</Card>

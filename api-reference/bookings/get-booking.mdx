@@ -17,7 +17,8 @@ GET https://app.tikk.chat/api/v1/bookings/{id}
 ## Path parameters
 
 <ParamField path="id" type="integer" required>
-  The unique integer identifier of the booking to retrieve. Obtain this value from the `id` field on any Booking object returned by `GET /bookings`.
+  The unique integer identifier of the booking to retrieve. Obtain this value
+  from the `id` field on any Booking object returned by `GET /bookings`.
 </ParamField>
 
 ## Example request
@@ -124,7 +125,7 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
 
       <Expandable title="location fields">
         <ResponseField name="type" type="string | null">
-          One of `video`, `in_person`, `none`, or `null`.
+          One of `video`, `in_person`, `none` or `null`.
         </ResponseField>
 
         <ResponseField name="label" type="string | null">
@@ -162,6 +163,7 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
         </ResponseField>
       </Expandable>
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -212,14 +214,17 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
 ```
 
 <Note>
-  Requesting an id that belongs to a booking in another user's account returns `404`, not `403`. The API never confirms or denies that a booking outside your account exists, so you cannot enumerate other users' booking ids through error codes.
+  Requesting an id that belongs to a booking in another user's account returns
+  `404`, not `403`. The API never confirms or denies that a booking outside your
+  account exists, so you cannot enumerate other users' booking ids through error
+  codes.
 </Note>
 
 ## Errors
 
-| Status | Meaning |
-| --- | --- |
-| `401` | Missing or invalid API key. |
-| `403` | Your API key does not have the `bookings.read` scope. |
-| `404` | No booking with the given `id` exists in your account. IDs belonging to other accounts also return `404`. |
-| `429` | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |
+| Status | Meaning                                                                                                   |
+| ------ | --------------------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid API key.                                                                               |
+| `403`  | Your API key does not have the `bookings.read` scope.                                                     |
+| `404`  | No booking with the given `id` exists in your account. IDs belonging to other accounts also return `404`. |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header.           |

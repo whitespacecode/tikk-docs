@@ -1,85 +1,66 @@
 ---
 title: "How Tikk finds open time slots"
 sidebarTitle: "Availability"
-description: "Tikk layers your weekly schedule, date overrides, buffer times and synced calendars to compute open slots."
+description: "Tikk layers your weekly schedule, date overrides, connected calendars and buffer times to work out when you're actually free."
 ---
 
-Tikk builds your available slots from four layers: your weekly schedule, date overrides, buffer times and every connected calendar. A slot only shows up when it clears all four.
+Every slot on your booking page has to clear several layers before a visitor ever sees it. Understanding those layers explains why a time you expected to be open sometimes isn't.
 
-## What determines availability
-
-Tikk applies these layers in order:
+## The layers
 
 <Steps>
-  <Step title="Weekly schedule">
-    Your weekly schedule is the base. Set the hours you're open for each day of the week (say, Mon-Fri 09:00-17:00). Slots outside those windows never show.
+  <Step title="Your weekly schedule">
+    The base. You set the hours you're open for each weekday, say Mon–Fri
+    09:00–17:00. Nothing outside those windows is ever bookable.
   </Step>
   <Step title="Date overrides">
-    Adjust or block availability on specific dates. Use these for holidays, vacation or one-off changes to your hours.
+    Exceptions to that base for specific dates. A holiday, a day off or a
+    Saturday you're making an exception for.
   </Step>
-  <Step title="Synced calendars">
-    Tikk checks every connected calendar. If any calendar has a busy event overlapping a slot, the slot is hidden. No double bookings.
+  <Step title="Your connected calendars">
+    Every calendar you've connected is checked. A busy event overlapping a slot,
+    even by a minute, removes it. This is what prevents double bookings.
   </Step>
   <Step title="Buffer times">
-    Buffers add a gap before or after each booking. With a 15-minute buffer after, a meeting ending at 10:00 pushes the next slot to 10:15.
+    Padding around existing bookings. With a 15-minute buffer after, a meeting
+    ending at 10:00 pushes the next bookable slot to 10:15.
   </Step>
-  <Step title="Service-specific settings">
-    Each service can override the base window and set its own lead time (like "at least 24 hours notice"). These narrow the pool further.
+  <Step title="The service being booked">
+    Its duration decides how the open time is sliced up and it can carry its own
+    buffers and its own date overrides on top of your account-wide ones.
   </Step>
 </Steps>
 
-## How slots are generated
+A slot has to survive all of them. One conflict anywhere and it's gone.
 
-Tikk splits your open windows into slots of the service's duration (default 30 minutes). A slot only makes the response if it passes every layer. One conflict, one drop.
+## How the open time is sliced
+
+Tikk takes what's left after those layers and cuts it into slots the length of the service being booked. A 90-minute gap offers three slots for a 30-minute service and none at all for a 2-hour one.
+
+There's also a **minimum of 15 minutes' notice**: slots starting sooner than that don't appear, so nobody books you for something starting in four minutes.
 
 <Info>
-  Slots are generated in real time when you hit the availability endpoint. Results always reflect your latest calendar state.
+  Slots are worked out the moment someone opens your page, never cached ahead of
+  time. If you accept a meeting in another calendar right now, the matching slot
+  is gone from your booking page immediately.
 </Info>
 
-## Slot fields
+## Timezones
 
-Each slot returns:
+Your weekly schedule and date overrides are stored in **your** timezone. Visitors see every slot converted to their own local time, so neither of you has to do the arithmetic.
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `start` | UTC date-time | Slot start as a UTC ISO 8601 timestamp (e.g. `2025-09-15T09:00:00Z`). |
-| `end` | UTC date-time | Slot end as a UTC ISO 8601 timestamp. |
-| `label` | string | Start time formatted in the **host's timezone**, ready to display. |
-| `spots_remaining` | integer | _(Group services only)_ Seats left in the slot. Omitted for one-to-one services. |
-
-`start` and `end` are always UTC so you can do reliable time math. Use `label` when you want a ready-to-show string in the host's local time.
-
-## Timezone handling
-
-Your weekly schedule and date overrides live in **your timezone**, set in account settings. Each returned slot includes a `label` in your timezone. Bookers see times auto-converted to their local timezone.
+Tikk takes your timezone from your browser and records it whenever you save **Settings → Profile**.
 
 <Warning>
-  If you change your account timezone, review your schedule and any active overrides. Stored hours don't shift with the timezone change.
+  That means a long trip can move it. If you save your profile from a machine
+  set to another timezone, your stored hours don't move with it — 09:00 stays
+  09:00, now in the new zone. After relocating, open your schedule and check it
+  still says what you meant.
 </Warning>
 
-## General vs service-scoped availability
-
-You can query in two modes:
-
-<Tabs>
-  <Tab title="General availability">
-    Without a `service` parameter you get your overall open windows from the base schedule. Useful for a broad calendar view or checking whether you're free on a given day.
-
-    ```http
-    GET https://app.tikk.chat/api/v1/availability
-    ```
-  </Tab>
-  <Tab title="Service-scoped availability">
-    Scoping to a service applies its duration, lead time and availability settings on top of your base schedule. This is what the booking page uses to show real bookable slots.
-
-    ```http
-    GET https://app.tikk.chat/api/v1/availability?service=discovery-call
-    ```
-  </Tab>
-</Tabs>
-
-Use service-scoped availability for booking flows so the slots you show match what someone can actually reserve.
-
 <Note>
-  Full request and response shape lives in the [List Availability](/api-reference/availability/list-availability) reference.
+  Setting all of this up is covered in [Set your
+  availability](/guides/availability-setup). If you're reading slots
+  programmatically, see [List
+  Availability](/api-reference/availability/list-availability).
 </Note>

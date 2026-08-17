@@ -1,56 +1,102 @@
 ---
 title: "Services"
 sidebarTitle: "Services"
-description: "A service is a bookable offering on your profile. Configure types, slugs, pricing and availability."
+description: "A service is something people can book: a discovery call, a paid session, a group workshop. Each has its own link, durations, price and rules."
 ---
 
-A service is a bookable offering on your profile. A discovery call, a paid consulting session, a group workshop. Each one has its own URL, duration, price and availability rules. Every booking is against a specific service.
+A service is a bookable offering on your booking page. A free discovery call, a paid consulting session, a group workshop. Each one has its own booking link, its own durations and price and its own rules. Every booking is made against a specific service.
 
-## Service properties
+Create and edit them under **Services**. The editor has three sections: **Basics**, **Availability** and **Advanced**.
 
-Each service has:
+## Basics
 
-| Property | Description |
-| --- | --- |
-| `title` | Human name shown on your booking page. |
-| `slug` | URL-safe ID, auto-derived from the title. |
-| `embed_url` | Full embeddable booking URL, ready to share or drop into a page. |
-| `duration` | Meeting length in minutes. Some services offer multiple durations. |
-| `price` | `0` for free, or a positive amount in minor currency units. |
-| `description` | Short explanation of what the meeting covers. |
-| `availability` | Which schedule applies and any service-specific lead time. |
+| Setting          | Notes                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| **Title**        | What you're offering, e.g. "Discovery call". Up to 50 characters.                    |
+| **Booking link** | The last part of the URL, generated from the title. Customising it is a Pro feature. |
+| **Description**  | What the meeting covers, shown on your booking page. Up to 500 characters.           |
 
-## Service types
-
-Three types cover the common cases:
-
-| Type | API fields | Description |
-| --- | --- | --- |
-| **One-to-one** | `is_group: false`, `is_personal_invite: false` | One booker, one slot. Standard for calls and consultations. |
-| **Group** | `is_group: true`, optional `max_attendees` | Multiple attendees in the same slot. Set `max_attendees` to cap seats. |
-| **Personal invite** | `is_personal_invite: true` | Private, invite-only service not listed on your public page. |
-
-<Note>
-  Group bookings are **Pro only**. See [Free vs Pro](/billing/plans).
-</Note>
-
-## Service slugs
-
-The slug is the last path segment of a booking URL:
+The booking link is the tail of the service's URL:
 
 ```text
 tikk.chat/joeri/discovery-call
-                └─────────────── slug: discovery-call
+                └──────────── booking link
 ```
 
-Tikk generates the slug from the title on creation. Spaces become hyphens, special characters are stripped. You can customise it at creation time. It must be unique on your profile.
+It may contain lowercase letters, numbers and hyphens and must be unique on your account. Rename the service later and the link follows the new title, unless you've customised it — a custom link stays put and it keeps working even if you move back to the Free plan.
 
-The slug is also what you pass as the `service` parameter in API requests:
+## Durations and pricing
 
-```text
-GET https://app.tikk.chat/api/v1/availability?service=discovery-call
-```
+A single service can offer several lengths. Under **Booking Durations**, tick the ones visitors may book, anywhere from 5 minutes to 8 hours. If you enable more than one, the visitor picks the length when booking.
+
+Pricing is either **Free** or **Paid**:
+
+- **Free**. Nothing to pay, no payment step in the booking flow.
+- **Paid**. You set a whole-number amount between €1 and €5,000.
+
+By default a paid rate is **per hour**, so a 30-minute booking costs half of it and a 90-minute booking one and a half times. Switch on **Fixed pricing** to charge the same amount per appointment regardless of length.
+
+<Note>
+  Before publishing a paid service, add your IBAN under **Billing** — otherwise
+  there's nowhere to send the money. See [Payments](/guides/payments).
+</Note>
+
+**Buffer time** also lives in this section: block time before or after bookings of this service so they never run back-to-back. Each service either uses your account default or overrides it. Buffers are a Pro feature. See [Set your availability](/guides/availability-setup).
+
+## Booking types
+
+Under **Advanced** you decide how the service behaves:
+
+| Type                | How it works                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **One-to-one**      | The default. One booker takes the slot and it disappears for everyone else.                                                                                         |
+| **Group**           | Several people book the same slot independently, up to a cap you set (2–50). Optionally show how many seats are left. See [Group bookings](/guides/group-bookings). |
+| **Personal invite** | A private link for one specific person, not listed on your public page. See [Personal invites](/guides/personal-invites).                                           |
+
+The same section holds **Auto-accept bookings** — confirm instantly, require your approval or follow your account-wide setting. See [Manual approval](/guides/manual-approval). And **Booking Location** — video call, in person or somewhere else. See [Meeting locations](/guides/meeting-locations).
+
+<Note>
+  Group bookings, personal invites, manual approval, buffer times and custom
+  booking links are **Pro features**.
+</Note>
+
+## Managing services
+
+From the **Services** list, each service offers:
+
+- **Highlight**. Marks it as the one to feature. On the Free plan, the highlighted service is the one shown publicly.
+- **Duplicate**. Copies all its settings into a new service, for when you offer variations of the same thing.
+- **Embed**. Grabs the snippet for your website.
+- **Create Personal Invite**. Turns it into a one-off private link.
+- **Delete**. Permanently removes it. A personal invite that's already been booked can't be deleted.
+
+You can also deactivate a service instead of deleting it. It disappears from your booking page and keeps its settings and history for when you want it back.
+
+## Free plan vs Pro
+
+<CardGroup cols={2}>
+  <Card title="Free" icon="circle">
+    - **1 service** visible on your page
+    - **1 connected calendar**
+    - One-to-one bookings
+    - Paid bookings _(platform fee applies)_
+    - Tikk branding
+  </Card>
+
+  <Card title="Pro at €12/mo" icon="star">
+    - **Unlimited services**
+    - **Unlimited calendars**
+    - Group bookings and personal invites
+    - Manual approval and buffer times
+    - Custom branding and booking links
+    - 0% transaction fee
+  </Card>
+</CardGroup>
+
+If you drop from Pro to Free with several services, nothing is deleted. Tikk simply shows one of them publicly, preferring the one you've highlighted. The rest reappear when you upgrade.
 
 <Tip>
-  Make your first service a **free discovery call**. <br />A short intro filters out unqualified leads and gives new visitors a low-friction way to book.
+  Make your first service a **free discovery call**. A short intro is the
+  lowest-friction thing a new visitor can say yes to and it filters out
+  enquiries that were never a fit.
 </Tip>

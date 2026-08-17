@@ -1,0 +1,62 @@
+---
+title: "Teamleader and HubSpot"
+sidebarTitle: "CRM integrations"
+description: "Connect Teamleader Focus or HubSpot so your CRM meetings block your availability and every Tikk booking lands on the right contact."
+---
+
+Tikk connects to two CRMs: **Teamleader Focus** and **HubSpot**. Both connections work in two directions at once.
+
+**Into Tikk.** Meetings already in your CRM count as busy time, so nobody books a slot you've committed elsewhere — exactly like a connected calendar.
+
+**Out of Tikk.** When a booking is confirmed, Tikk finds the contact by email (or creates them), then creates the meeting in your CRM against that contact. Your CRM stays current without anyone typing anything in twice.
+
+## Connect
+
+<Steps>
+  <Step title="Open Connected Apps">Go to **Settings → Connected Apps**.</Step>
+  <Step title="Connect your CRM">
+    Click **Connect** on Teamleader Focus or HubSpot.
+  </Step>
+  <Step title="Authorize Tikk">
+    You're sent to your CRM to sign in and approve the connection. Tikk asks
+    only for what it needs — calendar/meetings and contacts — and never sees
+    your password.
+  </Step>
+</Steps>
+
+Once connected, the integration appears alongside your calendars under **App integrations**.
+
+<Note>
+  On the Free plan you get **one active connection in total** and a connected
+  CRM counts toward the same limit as your calendars. Pro is unlimited.
+</Note>
+
+## What Tikk accesses
+
+| CRM                  | Access requested                          |
+| -------------------- | ----------------------------------------- |
+| **Teamleader Focus** | Your calendar events and your contacts.   |
+| **HubSpot**          | Your meetings and read/write on contacts. |
+
+Nothing else is read, stored or shared. Deals, invoices, pipelines and notes are never touched.
+
+## What happens on each booking
+
+| In Tikk             | In your CRM                                                                  |
+| ------------------- | ---------------------------------------------------------------------------- |
+| Booking confirmed   | The contact is found by email or created and a meeting is added against them |
+| Booking rescheduled | The meeting moves to the new time                                            |
+| Booking cancelled   | The meeting is removed                                                       |
+
+Contact matching is by email address, so a returning client doesn't become a duplicate record — their new meeting attaches to the contact you already have.
+
+## Disconnect
+
+Go to **Settings → Connected Apps** and disconnect. Tikk stops reading the CRM's meetings for availability and stops creating meetings in it. Anything already created stays where it is; nothing is deleted from your CRM.
+
+<Note>
+  **Settings → Connected Apps** is also where you review other apps you've
+  authorized against your Tikk account through OAuth and revoke any you no
+  longer use. See [Authentication](/api-reference/authentication) if you're
+  building one.
+</Note>

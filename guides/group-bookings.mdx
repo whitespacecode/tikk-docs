@@ -1,98 +1,67 @@
 ---
 title: "Group bookings and workshops"
 sidebarTitle: "Group bookings"
-description: "Group services let multiple attendees book the same slot. Set a seat cap and collect per-person payment."
+description: "Let several people book the same slot. Set a seat cap, show remaining spots and charge per person."
 ---
 
-Group bookings let multiple people sign up for the same slot. Workshops, webinars, group coaching, fitness classes. Anywhere you want a room full of people instead of a one-to-one call. Each attendee books independently and Tikk tracks remaining seats in real time.
+A group service lets several people book the same slot independently. Workshops, webinars, group coaching, classes — anywhere you want a room of people rather than a one-to-one call. Each attendee books on their own and Tikk keeps count of the seats.
 
 <Note>
-  Group bookings are a **Pro feature**. [Start a 7-day free trial](https://app.tikk.chat/register) to enable them.
+  Group bookings are a **Pro feature**. [Start a 7-day free
+  trial](https://app.tikk.chat/register) to enable them.
 </Note>
 
-## Create a group service
+## Set one up
 
 <Steps>
-  <Step title="Create a service or edit an existing one">
-    In your dashboard, go to **Services**. Click **New service** or edit an existing one.
+  <Step title="Open a service">
+    Go to **Services** and create one or edit an existing one.
   </Step>
-  <Step title="Enable Group booking">
-    In **Booking type**, switch to **Group booking**. Capacity settings appear below.
+  <Step title="Turn on group bookings">
+    In **Advanced → Group bookings**, switch it on.
   </Step>
-  <Step title="Set a seat cap">
-    Enter the max number of attendees per slot. Leave blank or set to **Unlimited** for webinars with no room limit.
+  <Step title="Set the seat cap">
+    Choose how many bookings each slot accepts, from 2 to 50.
   </Step>
-  <Step title="Set a per-person price (optional)">
-    For paid sessions, enter a price. Each attendee pays that amount at booking.
+  <Step title="Decide whether to show remaining spots">
+    Turn on **Show remaining open slots on booking page** to display seats left.
+    Leave it off to keep the numbers to yourself.
   </Step>
-  <Step title="Save and publish">
-    Click **Save**. Your booking page now shows the group slot with live seat availability.
+  <Step title="Set a price (optional)">
+    A paid group service charges **per person**, so each attendee pays when they
+    book.
   </Step>
 </Steps>
 
-## How attendees see it
+## What attendees see
 
-Visitors see each slot with the seats left, like **"3 of 8 spots left"**. As people book, the count updates in real time. When a slot is full it disappears. If someone cancels, the seat opens up again.
-
-## Remaining spots in the API
-
-When you fetch availability for a group service, each slot may include a `spots_remaining` field.
-
-```json
-{
-  "slots": [
-    {
-      "start": "2025-09-10T10:00:00Z",
-      "end": "2025-09-10T11:00:00Z",
-      "spots_remaining": 5
-    },
-    {
-      "start": "2025-09-10T14:00:00Z",
-      "end": "2025-09-10T15:00:00Z",
-      "spots_remaining": 0
-    }
-  ]
-}
-```
-
-| Field | Description |
-| --- | --- |
-| `spots_remaining` present | Group service with a finite cap. `0` means full. |
-| `spots_remaining` absent | One-to-one, or a group service with no cap. |
-
-## Booking data model
-
-A confirmed group booking reflects the host and attendee structure:
-
-```json
-{
-  "booker": {
-    "name": "Alex Johnson",
-    "email": "alex@example.com"
-  },
-  "attendees": [
-    { "name": "Jamie Lee", "email": "jamie@example.com" }
-  ],
-  "service": {
-    "is_group": true,
-    "max_attendees": 8,
-    "is_personal_invite": false
-  }
-}
-```
-
-| Field | Description |
-| --- | --- |
-| `booker` | The person who started the booking. |
-| `attendees` | Additional participants added at booking. Empty for one-to-one. |
-| `service.is_group` | `true` for group, `false` for one-to-one. |
-| `service.max_attendees` | Seat cap. `null` if unlimited. |
-| `service.is_personal_invite` | `true` if booked via a personal invite link, not the public page. |
+Each slot shows as bookable until it's full. With remaining spots switched on, visitors also see how many seats are left, counting down as people book. A full slot disappears from the page. If someone cancels, their seat comes back and the slot returns.
 
 <Tip>
-  For paid workshops, collect payment per seat at booking. Pre-paid attendees show up. No-shows drop.
+  Showing remaining spots works both ways. "2 spots left" creates urgency; "8
+  spots left" on a workshop nobody has booked does the opposite. Turn it on once
+  a session has some momentum.
 </Tip>
 
-<Info>
-  Fetch availability for a group service with `GET /api/v1/availability?service=your-service-slug`. See [List Availability](/api-reference/availability/list-availability).
-</Info>
+## Managing a group booking
+
+Each attendee is a separate booking in your **Inbox**, so you can see who's coming and handle them individually. Cancelling one attendee frees that seat and leaves the session running for everyone else.
+
+Everyone gets the same meeting link, the same reminder 24 hours ahead and the same updates if you reschedule.
+
+<Warning>
+  Rescheduling a group session moves one booking at a time, not the whole room.
+  For a session with several attendees booked, tell them first — moving each one
+  individually is a lot of surprise emails.
+</Warning>
+
+<Tip>
+  For paid workshops, take the money at booking. Pre-paid attendees turn up;
+  free registrations for a workshop routinely lose half the room.
+</Tip>
+
+<Note>
+  Pulling seat counts into your own systems? Availability for a group service
+  includes the seats left per slot. See [List
+  Availability](/api-reference/availability/list-availability).
+</Note>

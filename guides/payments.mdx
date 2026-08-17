@@ -4,80 +4,89 @@ sidebarTitle: "Payments"
 description: "Charge for any service with iDEAL, Bancontact or card. Payment is collected at booking, before the slot is confirmed."
 ---
 
-Charge for any service, with payment taken at booking. The slot is only confirmed and added to both calendars once payment goes through. No unconfirmed bookings sitting on your calendar.
+Charge for any service and take the money at booking. The slot is only confirmed and written to both calendars once payment goes through, so you never have an unpaid meeting sitting on your calendar.
 
 ## Accepted payment methods
 
-Clients pay at booking with:
+Clients pay during the booking flow with:
 
-- **iDEAL**. Direct bank transfer, popular in the Netherlands.
+- **iDEAL**. Direct bank transfer, the standard in the Netherlands.
 - **Bancontact**. Widely used in Belgium.
 - **Credit or debit card**. Visa, Mastercard and other major networks.
 
-Payment happens inline on your booking page. Clients don't need a Tikk account to pay.
+Payment happens inline. Clients don't need a Tikk account.
 
-## Set a price on a service
+## Set a price
 
-You can enable paid booking on any service independently.
+Pricing is set per service, under **Services → your service → Availability**.
 
 <Steps>
-  <Step title="Open your service">
-    In the dashboard, go to **Services** and click the one to make paid, or create a new one.
+  <Step title="Switch pricing to Paid">
+    Choose **Paid** and enter an amount. It must be a whole number between €1
+    and €5,000.
   </Step>
-  <Step title="Enable Paid booking and set a price">
-    Switch on **Paid booking** and enter an amount.
-  </Step>
-  <Step title="Pick a currency">
-    Match the currency to your payout account. Clients see the price in that currency.
+  <Step title="Decide how the rate applies">
+    By default the amount is an **hourly rate**: a 30-minute booking costs half
+    of it, a 90-minute booking one and a half times. Turn on **Fixed pricing**
+    to charge the same amount per appointment, whatever its length.
   </Step>
   <Step title="Save">
-    Click **Save**. The booking form now includes a payment step.
+    The booking form for this service now includes a payment step.
   </Step>
 </Steps>
 
+You set one amount, not one per duration. Tikk works out what each enabled duration costs and shows the price next to it, both in the editor and on your booking page — so with a €90 hourly rate, a 20-minute booking is listed at €30 and a 90-minute one at €135.
+
 ## Transaction fees
 
-| Plan | Transaction fee |
-| --- | --- |
-| Free | Platform fee per booking. |
-| Pro | **0%**. You keep 100% of each payment. |
+| Plan | Transaction fee                             |
+| ---- | ------------------------------------------- |
+| Free | Platform fee per booking.                   |
+| Pro  | **0%**. You keep 100% of the meeting price. |
 
 <Note>
-  Pro removes platform transaction fees. If you take paid bookings at any real volume, it usually pays for itself.
+  Pro removes the platform fee on paid bookings. If you take paid bookings at
+  any real volume, it usually pays for itself.
 </Note>
 
-## Payouts
+## Getting paid out
 
-Once a payment is confirmed, funds are queued for transfer to your connected bank account. The calendar event and meeting link only go out after payment is captured. Never before.
+Payouts are **not** automatic — you request them when it suits you.
 
-Connect your bank account under **Settings → Payouts** before publishing a paid service.
+<Steps>
+  <Step title="Add your payout details once">
+    Under **Billing**, add your IBAN and the account holder's name. Do this
+    before you publish a paid service; without it there's nowhere to send the
+    money.
+  </Step>
+  <Step title="Let payments clear the hold period">
+    A payment becomes available for payout **7 days after it was paid**. Until
+    then it shows in **Earnings** as pending, with the days remaining.
+  </Step>
+  <Step title="Request the payout">
+    Once your available balance reaches the **€10 minimum**, click **Request
+    payout** in **Earnings**. The full available balance is transferred to your
+    bank account.
+  </Step>
+</Steps>
 
-## Booking payment states
+A few rules worth knowing:
 
-Every booking exposes a `payment` object:
+- You can have **one pending payout request at a time**. Submit the next one after the current is processed.
+- Each payout produces a **downloadable invoice**, so your bookkeeping has a document per transfer.
+- **Earnings** breaks every payment down into gross, platform fee and net and shows which payments have been paid out.
 
-```json
-{
-  "payment": {
-    "status": "paid",
-    "amount": 5000,
-    "currency": "eur"
-  }
-}
-```
+## When payment fails
 
-| Field | Description |
-| --- | --- |
-| `status` | One of `none`, `pending`, `paid`, `failed` or `refunded`. |
-| `amount` | Amount in minor units. `5000` is €50.00. |
-| `currency` | ISO 4217 code, e.g. `eur`. |
+If checkout is started but never completed, the booking sits as **Awaiting payment** and the slot is released. A declined payment shows as **Payment failed**. Either way you don't end up with a confirmed meeting that was never paid for.
 
-`pending` means checkout started but wasn't completed. `failed` means the payment was declined. The slot is released automatically.
-
-<Tip>
-  Even a small price filters out low-commitment bookings and cuts no-shows. Hosts often see fewer cancellations after adding a small fee.
-</Tip>
+The calendar event and the meeting link are only issued after the payment is captured. Never before.
 
 ## Free meetings
 
-For a free service, set the price to €0 or leave **Paid booking** off. Free services return `payment.status = "none"` and skip the payment step.
+Leave a service on **Free** pricing and the payment step is skipped entirely.
+
+<Tip>
+  Even a small price cuts no-shows. Someone who has paid €20 turns up in a way
+  someone who clicked a free link doesn't.
+</Tip>
