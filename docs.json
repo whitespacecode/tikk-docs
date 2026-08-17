@@ -120,7 +120,8 @@
   "integrations": {
     "posthog": {
       "apiKey": "phc_pC7W69jal6F4Dq8c20pId4jqyuaLa4JcdNqH631vEQ",
-      "sessionRecording": true
+      "sessionRecording": true,
+      "apiHost": "https://p.tikk.chat"
     }
   }
 }
