@@ -47,6 +47,8 @@
           {
             "group": "Guides",
             "pages": [
+              "guides/website-mode",
+              "guides/classic-page",
               "guides/calendar-sync",
               "guides/availability-setup",
               "guides/meeting-locations",

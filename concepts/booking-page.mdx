@@ -1,26 +1,38 @@
 ---
-title: "Your booking page"
-sidebarTitle: "Booking page"
-description: "Your booking page at tikk.chat/yourname lists your services so visitors can book you around the clock."
+title: "Your public page"
+sidebarTitle: "Public page"
+description: "One address, two ways to present it. Publish the booking page on its own, or put a full website in front of it."
 ---
 
-Your booking page is your public scheduling hub at `tikk.chat/yourname`. It introduces you and lists every active service you've published, so anyone with the link can book you without emailing back and forth.
+Your public page lives at `tikk.chat/yourname`. It's the only part of Tikk a prospective client ever sees, and you decide what it looks like when they get there.
 
-## What visitors see
+There are two ways to publish it. Both live at the same address, so switching between them never breaks a link you've already shared.
 
-At the top of the page: your name, your title, a short bio, your profile photo and your logo. Edit all of them under **Booking Page** in the sidebar.
+<CardGroup cols={2}>
+  <Card title="Classic" icon="calendar-check">
+    The booking page itself: your photo, a short introduction and a calendar. Visitors pick a time and book. **Always on** — it's what sits underneath everything else.
+  </Card>
 
-Below that, each of your active services appears with its title, duration and price. Clicking one opens its booking flow, where the visitor picks a slot and fills in their details.
+  <Card title="Website" icon="layout-template">
+    A landing page in front of the booking flow — hero, story, services, testimonials, FAQ. Visitors read first, then click through to book. **Optional**, switch it on when you want it.
+  </Card>
+</CardGroup>
+
+Find both under **Website** in the sidebar. That screen is the hub: it shows a drawing of each mode, a switch for the website and a button into each editor.
+
+## Choosing a mode
+
+The classic booking page can't be switched off. It's the thing itself, and it's what visitors land on until you decide otherwise.
+
+The website is something you put **in front** of it. Flip the switch on the Website card and your address starts serving the landing page; flip it back and you're returned to the booking page exactly as it was. Nothing is deleted either way — the page you built is still there when you switch it back on.
 
 <Note>
-  On the Free plan only one service is publicly visible. If you have several,
-  Tikk shows the one you've highlighted, falling back to your oldest. Upgrade to
-  Pro to show them all.
+  Whichever mode is live, your individual service links (`tikk.chat/yourname/discovery-call`) always go straight to the booking flow. The website advertises your services; it never wraps the booking engine.
 </Note>
 
 ## Your page isn't live until you claim a username
 
-A new account has no username and until you pick one there's no public page and no one can book you. Claim yours under **Settings → Profile**. Your booking page goes live the moment you save it.
+A new account has no username, and until you pick one there's no public address and nobody can book you. Claim yours under **Settings → Profile**. Your page goes live the moment you save.
 
 Choose carefully: the username is in every link you share.
 
@@ -44,7 +56,7 @@ The last part is the service's booking link, generated from its title. See [Serv
 
 ## Sharing your page
 
-Click **Share** on your booking page for four ways to hand out the link:
+Click **Share** in the Website header — or from inside either editor — for four ways to hand out the link:
 
 | Tab         | What you get                                                                          |
 | ----------- | ------------------------------------------------------------------------------------- |
@@ -53,29 +65,34 @@ Click **Share** on your booking page for four ways to hand out the link:
 | **Social**  | Pre-written posts for the common social networks.                                     |
 | **QR code** | A downloadable QR code, for print, slides or a shop window.                           |
 
-## Branding and layout
+## Where everything is edited now
 
-Open **Booking Page** and switch to the **Branding** tab. Everything here is a **Pro feature**:
+Your public page is edited **on the page itself**. Open an editor and you're looking at the real page, not a preview of it — click a headline and type.
 
-| Setting                | What it does                                                                                                                                  |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Booking view**       | How visitors pick a time: **Month** (a calendar), **Day** (one day at a time) or **Agenda** (a list of the next open times, no date picking). |
-| **Custom logo**        | Replaces the Tikk logo on your public page. Max 2MB.                                                                                          |
-| **Hide Tikk branding** | Removes Tikk branding from your public page, your emails and the embed widget.                                                                |
-| **Accent colour**      | The colour used for buttons, selected slots and highlights.                                                                                   |
-| **Page background**    | A colour or a CSS gradient like `linear-gradient(135deg, #667eea, #764ba2)`.                                                                  |
-| **Custom headline**    | A message or quote above your booking card, in a colour you choose.                                                                           |
-| **Avatar shape**       | Circle, rounded or square.                                                                                                                    |
+What isn't on the page is edited where it belongs:
 
-<Note>
-  You can set these on the Free plan and they'll be saved, they just won't show
-  on your public page. They activate automatically when you upgrade.
-</Note>
+| What                                     | Where                                                                       |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| Prices, durations, location, booking type | **Services** — each service carries its own. See [Services](/concepts/services). |
+| The hours you're open, days off, buffers  | **Availability**. See [Set your availability](/guides/availability-setup).   |
+| Your name, email, username, timezone      | **Settings → Profile**.                                                     |
+| Everything a visitor sees on the page     | The editor for the mode you're publishing.                                  |
 
-<Tip>
-  [Upgrade to Pro](https://app.tikk.chat/register) (€12/mo) for custom branding,
-  unlimited services, group bookings, manual approval and buffer times.
-</Tip>
+<CardGroup cols={2}>
+  <Card title="Build a website" icon="layout-template" href="/guides/website-mode">
+    Sections, themes and colours in the website editor.
+  </Card>
+
+  <Card title="Edit the classic page" icon="calendar-check" href="/guides/classic-page">
+    Photo, introduction, booking view and page colours.
+  </Card>
+</CardGroup>
+
+## The Tikk badge
+
+Every published page carries a small "Make your website with tikk" badge. It's the same on both modes, so it's set once on the Website hub rather than in either editor.
+
+Removing it is a **Pro feature**.
 
 <Note>
   Building an integration? Your profile and service list are available from [Get
