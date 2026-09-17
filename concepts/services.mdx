@@ -6,7 +6,14 @@ description: "A service is something people can book: a discovery call, a paid s
 
 A service is a bookable offering on your booking page. A free discovery call, a paid consulting session, a group workshop. Each one has its own booking link, its own durations and price and its own rules. Every booking is made against a specific service.
 
-Create and edit them under **Services**. The editor has three sections: **Basics**, **Availability** and **Advanced**.
+Create and edit them under **Services**. The editor has four sections:
+
+| Section          | What it covers                       |
+| ----------------- | ------------------------------------- |
+| **Basics**        | Name, URL and description             |
+| **Availability**  | Pricing and booking durations         |
+| **Limits**        | Notice, booking window and quotas     |
+| **Advanced**      | Group bookings and the approval flow  |
 
 ## Basics
 
@@ -41,7 +48,47 @@ By default a paid rate is **per hour**, so a 30-minute booking costs half of it 
   there's nowhere to send the money. See [Payments](/guides/payments).
 </Note>
 
-**Buffer time** also lives in this section: block time before or after bookings of this service so they never run back-to-back. Each service either uses your account default or overrides it. Buffers are a Pro feature. See [Set your availability](/guides/availability-setup).
+## Limits
+
+Find these under the **Limits** tab. They control when a service can be booked and how often, on top of your regular [availability](/concepts/availability).
+
+### Minimum notice
+
+How much warning you need before someone can book you — the gap between right now and the earliest bookable slot. Enter it as minutes, hours or days, anywhere from zero up to 30 days.
+
+On the Free plan every service keeps the default of **15 minutes** and the field is locked. Pro lets you set your own per service: a quick chat might need none at all, while a prep-heavy session might need a full day's warning.
+
+### Booking window
+
+How far into the future a service stays open. Off by default, so there's no ceiling — visitors can book as far out as your availability reaches. This is a Pro feature.
+
+Turn it on and choose one of two shapes:
+
+- **Rolling**. Bookable for the next *N* days from today, counted either as calendar days or business days (business days skip Saturdays and Sundays). Up to 730 days.
+- **Date range**. Bookable only between a start and end date you set. If the range hasn't started yet, that start date becomes the earliest bookable moment, later than minimum notice alone would allow.
+
+### Quotas
+
+Two independent caps on how much of a service you're willing to sell in a stretch of time, both Pro features:
+
+- **Limit booking frequency**. The maximum number of bookings in a period, up to 1,000.
+- **Limit total booking duration**. The maximum number of minutes booked in a period, up to 10,080 (a week's worth).
+
+Either one can run several periods at once — a day, a week, a month, a year — so you can say "one a day, and no more than five a week." Every active period has to have room, so a day disappears from the calendar the moment any single one of them would be exceeded.
+
+Only **accepted** bookings count against a quota. A pending request hasn't been agreed to yet, so it doesn't hold its slot and can't spend one either. For a group service, a session already on the calendar keeps selling its remaining seats even after the quota is spent — joining a session that's already running doesn't start a new one.
+
+### Bookings per person
+
+Caps how many upcoming bookings — pending or accepted — one email address can hold for this service at a time, from 1 to 100. A Pro feature.
+
+This one works differently from the others: who's booking isn't known until they submit the form, so it can't hide a calendar slot in advance the way the other limits do. Instead, someone who's already at their limit gets turned away when they try to submit another request.
+
+<Note>
+  Minimum notice, booking window, quotas and the per-person cap are all **Pro
+  features**. On the Free plan, every service keeps the fixed 15-minute
+  default notice and no other limits.
+</Note>
 
 ## Booking types
 
@@ -56,8 +103,9 @@ Under **Advanced** you decide how the service behaves:
 The same section holds **Auto-accept bookings**: confirm instantly, require your approval or follow your account-wide setting. See [Manual approval](/guides/manual-approval). And **Booking Location**: video call, in person or somewhere else. See [Meeting locations](/guides/meeting-locations).
 
 <Note>
-  Group bookings, personal invites, manual approval, buffer times and custom
-  booking links are **Pro features**.
+  Group bookings, personal invites, manual approval and custom booking links
+  are **Pro features**, alongside the notice, booking window and quota
+  controls under [Limits](#limits) above.
 </Note>
 
 ## Managing services
@@ -80,6 +128,7 @@ You can also deactivate a service instead of deleting it. It disappears from you
     - **1 connected calendar**
     - One-to-one bookings
     - Paid bookings _(platform fee applies)_
+    - Fixed 15-minute minimum notice
     - Website builder, every section, themes and colours
     - Tikk badge
   </Card>
@@ -88,14 +137,15 @@ You can also deactivate a service instead of deleting it. It disappears from you
     - **Unlimited services**
     - **Unlimited calendars**
     - Group bookings and personal invites
-    - Manual approval and buffer times
+    - Manual approval
+    - Custom notice, booking window and booking quotas
     - Custom booking links
     - Custom logo, no badge, Day and Agenda views
     - 0% transaction fee
   </Card>
 </CardGroup>
 
-If you drop from Pro to Free with several services, nothing is deleted. Tikk simply shows one of them publicly, preferring the one you've highlighted. The rest reappear when you upgrade.
+If you drop from Pro to Free with several services, nothing is deleted. Tikk simply shows one of them publicly, preferring the one you've highlighted. The rest reappear when you upgrade. Any Limits you'd already set keep applying exactly as they were — like a custom booking link, downgrading locks the controls rather than resetting them.
 
 <Tip>
   Make your first service a **free discovery call**. A short intro is the
