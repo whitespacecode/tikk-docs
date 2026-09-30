@@ -54,27 +54,15 @@ API keys are the simplest credential type. They are tied to your own Tikk accoun
 
 ## OAuth 2.0 (for partner apps)
 
-If you are building an integration that accesses Tikk data on behalf of another user, use the OAuth 2.0 authorization code flow. Your users grant your app permission through Tikk's hosted consent screen and Tikk returns an access token your app can use on their behalf.
+If you're building an app that other Tikk users connect to, use OAuth 2.0 with the authorization code flow. Your users approve your app on Tikk's consent screen and Tikk issues an access token your app uses on their behalf.
 
-| Parameter              | Value                                   |
-| ---------------------- | --------------------------------------- |
-| Authorization URL      | `https://app.tikk.chat/oauth/authorize` |
-| Token URL              | `https://app.tikk.chat/oauth/token`     |
-| Refresh URL            | `https://app.tikk.chat/oauth/token`     |
-| Access token lifetime  | 30 days                                 |
-| Refresh token lifetime | 90 days                                 |
+Partner apps are registered and documented in the [developer portal](https://developer.tikk.chat). There you create a developer account, register your app and get a client ID and client secret. The portal also covers the full OAuth flow, token lifetimes, refreshing and sandbox apps.
 
-**Start the flow** by redirecting the user to the authorization URL with your app's parameters:
+<Card title="Developer portal" icon="code" href="https://developer.tikk.chat">
+  Register an app and follow the OAuth guide for partner integrations.
+</Card>
 
-```text
-https://app.tikk.chat/oauth/authorize
-  ?client_id=YOUR_CLIENT_ID
-  &redirect_uri=https://yourapp.com/callback
-  &response_type=code
-  &scope=profile.read availability.read bookings.read
-```
-
-After the user approves, Tikk redirects to your `redirect_uri` with a `code` parameter. Exchange that code for an access token at the token URL, then store the access token and refresh token securely. Use the refresh token to obtain a new access token before the current one expires.
+Once you have an access token, you call the endpoints in this reference exactly as you would with an API key.
 
 ## Credential scope and user isolation
 

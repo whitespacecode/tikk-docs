@@ -16,6 +16,12 @@
     "dark": "/images/logo-icon2.svg"
   },
   "navbar": {
+    "links": [
+      {
+        "label": "Developer portal",
+        "href": "https://developer.tikk.chat"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Get Started Free",
