@@ -65,7 +65,14 @@ Iterate over the `errors` object to surface specific field-level messages to you
 
 ## Rate limiting (429)
 
-Tikk allows 60 requests per minute per credential. When you exceed this limit, the API responds with `429 Too Many Requests` and includes a `Retry-After` header indicating the number of seconds to wait before retrying:
+Tikk allows 60 requests per minute per credential. Every successful response carries the current state:
+
+| Header                  | Meaning                              |
+| ----------------------- | ------------------------------------ |
+| `X-RateLimit-Limit`     | Requests allowed per minute.         |
+| `X-RateLimit-Remaining` | Requests left in the current minute. |
+
+When you exceed the limit, the API responds with `429 Too Many Requests` and includes a `Retry-After` header indicating the number of seconds to wait before retrying:
 
 ```http
 HTTP/1.1 429 Too Many Requests
@@ -105,4 +112,4 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 
 ## 404 and user isolation
 
-The API enforces strict user isolation. A booking ID, service ID or service slug that exists but belongs to another user returns `404 Not Found`, not `403 Forbidden`. The API never confirms whether a resource exists outside your account. On a `404`, check the ID or slug belongs to a resource on your account before assuming it doesn't exist.
+The API enforces strict user isolation. A booking or service ID that exists but belongs to another user returns `404 Not Found`, not `403 Forbidden`. The API never confirms whether a resource exists outside your account. On a `404`, check the ID belongs to a resource on your account before assuming it doesn't exist.

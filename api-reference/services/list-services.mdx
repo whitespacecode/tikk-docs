@@ -1,70 +1,16 @@
 ---
-title: "GET /services. List your services"
-sidebarTitle: "GET /services"
-description: "Paginated list of your default services or your single-use services, selected with the type parameter."
+title: "List your services"
+openapi: "/api-reference/openapi.yaml GET /services"
 ---
 
-The `/services` endpoint lists your services of one type. Without a `type`, it returns your default services: the ones visitors can book on your booking page right now.
+Every service has a `type`:
 
-## Service types
-
-Every service has a `type`.
-
-| `type`       | What it is                                                                                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default`    | A permanent booking page, such as "Intro call". Every service, of either type, has an `id`. You can create, edit and delete them through the API.                                                  |
-| `single_use` | A private booking link for one person, spent once it's booked. Every booking made through one is accepted straight away and is never paid.  |
+| `type`       | What it is                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `default`    | A permanent booking page, such as "Intro call".                                                                  |
+| `single_use` | A private booking link for one person, spent once it's booked. Bookings through it are accepted and never paid. |
 
 <Note>
-  Don't confuse `type: "default"` with `is_default`. `is_default` marks the one service your booking page highlights.
+  Don't confuse `type: "default"` with `is_default`. `is_default` marks the one
+  service your booking page highlights.
 </Note>
-
-## Endpoint
-
-```text
-GET https://app.tikk.chat/api/v1/services
-```
-
-**Required scope:** `services.read`
-
-## Query parameters
-
-<ParamField query="type" type="string">
-  `default` or `single_use`. Defaults to `default`.
-</ParamField>
-
-<ParamField query="per_page" type="integer">
-  Number of services per page. Between `1` and `100`. Defaults to `25`.
-</ParamField>
-
-## Example request
-
-```bash
-curl "https://app.tikk.chat/api/v1/services?type=single_use" \
-  -H "Authorization: Bearer {YOUR_API_KEY}"
-```
-
-## Response schema
-
-<ResponseField name="data" type="array">
-  Service objects. The shape depends on `type`, and is described on [Get service](/api-reference/services/get-service#response-schema).
-
-  Default services are active, within your plan's service limit, and listed with the `is_default` one first. Single-use services are listed newest first, whatever their status.
-</ResponseField>
-
-<ResponseField name="links" type="object">
-  Pagination links: `first`, `last`, `prev` and `next`.
-</ResponseField>
-
-<ResponseField name="meta" type="object">
-  Pagination metadata such as `current_page`, `per_page`, `total` and `last_page`.
-</ResponseField>
-
-## Errors
-
-| Status | Meaning                                                                                         |
-| ------ | ----------------------------------------------------------------------------------------------- |
-| `401`  | Missing or invalid credential.                                                                  |
-| `403`  | Your credential does not have the `services.read` scope.                                        |
-| `422`  | `type` is not `default` or `single_use`, or `per_page` is not an integer between 1 and 100.     |
-| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

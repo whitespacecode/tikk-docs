@@ -94,15 +94,34 @@
             ]
           },
           {
-            "group": "Endpoints",
+            "group": "Profile",
+            "icon": "user",
             "pages": [
-              "api-reference/profile/get-profile",
+              "api-reference/profile/get-profile"
+            ]
+          },
+          {
+            "group": "Services",
+            "icon": "layers",
+            "pages": [
               "api-reference/services/list-services",
               "api-reference/services/get-service",
               "api-reference/services/create-service",
               "api-reference/services/update-service",
-              "api-reference/services/delete-service",
-              "api-reference/availability/list-availability",
+              "api-reference/services/delete-service"
+            ]
+          },
+          {
+            "group": "Availability",
+            "icon": "calendar",
+            "pages": [
+              "api-reference/availability/list-availability"
+            ]
+          },
+          {
+            "group": "Bookings",
+            "icon": "list",
+            "pages": [
               "api-reference/bookings/list-bookings",
               "api-reference/bookings/get-booking"
             ]
@@ -110,6 +129,14 @@
         ]
       }
     ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["bash", "javascript", "python", "php"]
+    }
   },
   "footer": {
     "socials": {
