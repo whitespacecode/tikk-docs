@@ -10,7 +10,6 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 | Scope               | Required for                                              | Grants                                       | Plan |
 | ------------------- | --------------------------------------------------------- | -------------------------------------------- | ---- |
-| none                | `GET /token`                                              | Any valid credential can call it             | Free |
 | `profile.read`      | `GET /profile`, `GET /services`, `GET /services/{slug}`   | Public profile, username and services        | Free |
 | `availability.read` | `GET /availability`                                       | Available time slots                         | Free |
 | `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            | Pro  |
@@ -35,7 +34,7 @@ What a credential can do depends on the plan of the Tikk account it belongs to, 
 
 Nothing needs to be reconnected or reissued when the plan changes. After an upgrade the same credential works immediately. After a downgrade, Pro calls return `plan_required` again.
 
-To adapt your UI up front, call [`GET /token`](/api-reference/token/get-token). It lists your credential's scopes with `available: true` or `false`. Prefer it over hard-coding which scopes need Pro.
+To adapt your UI up front, read `plan` from [`GET /profile`](/api-reference/profile/get-profile). Pro scopes only work when it is `pro`.
 
 ## API keys
 

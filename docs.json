@@ -96,7 +96,6 @@
           {
             "group": "Endpoints",
             "pages": [
-              "api-reference/token/get-token",
               "api-reference/profile/get-profile",
               "api-reference/services/list-services",
               "api-reference/services/get-service",
