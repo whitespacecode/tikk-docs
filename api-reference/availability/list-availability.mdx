@@ -17,19 +17,17 @@ GET https://app.tikk.chat/api/v1/availability
 ## Example request
 
 ```bash
-curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026-08-17&to=2026-08-24&duration=30" \
+curl "https://app.tikk.chat/api/v1/availability?service=48213&from=2026-08-17&to=2026-08-24&duration=30" \
   -H "Authorization: Bearer {YOUR_API_KEY}"
 ```
 
 ## Query parameters
 
-<ParamField query="service" type="string">
-  Service slug (e.g. `discovery-call`) or the full booking URL (e.g.
-  `https://tikk.chat/joeri/discovery-call`). Slugs come from [`GET
-  /services`](/api-reference/services/list-services). The access code of one of
-  your single-use links also works. When omitted, the response reflects your
-  general availability across all services. Supplying an unknown value returns
-  `404`. Maximum 100 characters.
+<ParamField query="service" type="integer">
+  Service `id`, as returned by [`GET /services`](/api-reference/services/list-services).
+  Works for default and single-use services. When omitted, the response reflects
+  your general availability across all services. An id that isn't one of your
+  services returns `404`. A value that isn't an integer returns `422`.
 </ParamField>
 
 <ParamField query="from" type="date">
@@ -108,8 +106,8 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
       The host's configured timezone (e.g. `"Europe/Brussels"`). All `label` values in the slots are rendered in this timezone.
     </ResponseField>
 
-    <ResponseField name="service" type="string | null">
-      The slug of the service this availability is scoped to or `null` when returning general availability.
+    <ResponseField name="service" type="integer | null">
+      The `id` of the service this availability is scoped to or `null` when returning general availability.
     </ResponseField>
 
   </Expandable>
@@ -145,7 +143,7 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
     "to": "2026-08-24",
     "duration_minutes": 30,
     "timezone": "Europe/Brussels",
-    "service": "discovery-call"
+    "service": 48213
   }
 }
 ```
@@ -163,6 +161,6 @@ curl "https://app.tikk.chat/api/v1/availability?service=discovery-call&from=2026
 | ------ | ------------------------------------------------------------------------------------------------------ |
 | `401`  | Missing or invalid credential.                                                                         |
 | `403`  | Your credential does not have the `availability.read` scope.                                           |
-| `404`  | The value passed to `service` does not match any of your services.                                     |
-| `422`  | One or more query parameters failed validation (e.g. `duration` outside 15–180 or `to` before `from`). |
+| `404`  | The value passed to `service` is not the id of one of your services.                                     |
+| `422`  | One or more query parameters failed validation (e.g. `duration` outside 15–180, `to` before `from` or a non-integer `service`). |
 | `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header.        |

@@ -10,11 +10,11 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 | Scope               | Required for                                              | Grants                                       | Plan |
 | ------------------- | --------------------------------------------------------- | -------------------------------------------- | ---- |
-| `profile.read`      | `GET /profile`, `GET /services`, `GET /services/{slug}`   | Public profile, username and services        | Free |
+| `profile.read`      | `GET /profile`                                            | Public profile, username and plan            | Free |
+| `services.read`     | `GET /services`, `GET /services/{id}`                     | Your default and single-use services         | Free |
+| `services.write`    | `POST /services`, `PATCH /services/{id}`, `DELETE /services/{id}` | Create, edit and delete your services and single-use links | Free |
 | `availability.read` | `GET /availability`                                       | Available time slots                         | Free |
 | `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            | Pro  |
-| `invites.read`      | `GET /invites`, `GET /invites/{id}`                       | Single-use links                             | Free |
-| `invites.write`     | `POST /invites`, `DELETE /invites/{id}`                   | Create and delete single-use links           | Free |
 
 ## Plans
 
@@ -70,5 +70,5 @@ If you call an endpoint without the required scope, the API responds with `403 F
 <Tip>
   Request the minimum scopes your integration needs. Fewer scopes means smaller
   impact if a token leaks. An attacker with a `profile.read`-only token can't
-  reach bookings data or create invites.
+  reach bookings data or change your services.
 </Tip>

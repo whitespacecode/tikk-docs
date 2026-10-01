@@ -1,43 +1,188 @@
 ---
-title: "GET /services/{slug}. Retrieve a single service"
-sidebarTitle: "GET /services/{slug}"
-description: "Fetch one bookable service by slug, with durations, prices, location and booking URL."
+title: "GET /services/{id}. Retrieve a single service"
+sidebarTitle: "GET /services/{id}"
+description: "Fetch one service of either type by its id."
 ---
 
-The `/services/{slug}` endpoint returns a single service. A slug that isn't bookable right now returns `404`, exactly as it does on your public booking page.
+The `/services/{id}` endpoint returns one service. Both types are addressed by `id`. Slugs aren't accepted in the path. A default service that isn't bookable right now, or an id that isn't on your account, returns `404`.
 
 ## Endpoint
 
 ```text
-GET https://app.tikk.chat/api/v1/services/{slug}
+GET https://app.tikk.chat/api/v1/services/{id}
 ```
 
-**Required scope:** `profile.read`
+**Required scope:** `services.read`
 
 ## Path parameters
 
-<ParamField path="slug" type="string" required>
-  The service `slug`, as returned by [`GET /services`](/api-reference/services/list-services).
+<ParamField path="id" type="integer" required>
+  The service `id`, as returned by [`GET /services`](/api-reference/services/list-services) or `POST /services`.
 </ParamField>
 
 ## Example request
 
 ```bash
-curl https://app.tikk.chat/api/v1/services/intro-call \
+curl https://app.tikk.chat/api/v1/services/48213 \
   -H "Authorization: Bearer {YOUR_API_KEY}"
 ```
 
 ## Response schema
 
+Fields that don't apply to a type are left out rather than set to `null`.
+
 <ResponseField name="data" type="object">
-  The matching Service object. Every field is described on [List services](/api-reference/services/list-services#response-schema).
+  The matching service. The `type` field tells you which shape you got.
+
+  <Expandable title="Default service">
+    <ResponseField name="type" type="string">
+      `default`.
+    </ResponseField>
+
+    <ResponseField name="id" type="integer">
+      Identifier. Pass it to `GET`, `PATCH` and `DELETE /services/{id}`, as `service` on `/availability` and as `service` on `POST /services` to copy it into a single-use service.
+    </ResponseField>
+
+    <ResponseField name="slug" type="string">
+      URL-safe name used in the service's booking URL.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Service name shown on the booking page.
+    </ResponseField>
+
+    <ResponseField name="description" type="string | null">
+      Description shown on the booking page.
+    </ResponseField>
+
+    <ResponseField name="is_default" type="boolean">
+      `true` for the service your booking page highlights.
+    </ResponseField>
+
+    <ResponseField name="is_group" type="boolean">
+      `true` if several people can book the same slot.
+    </ResponseField>
+
+    <ResponseField name="max_attendees" type="integer | null">
+      Seat cap for group services. `null` otherwise.
+    </ResponseField>
+
+    <ResponseField name="requires_approval" type="boolean">
+      `true` if you accept each booking by hand.
+    </ResponseField>
+
+    <ResponseField name="durations" type="array">
+      The durations a booker can pick. See [Duration](#duration).
+    </ResponseField>
+
+    <ResponseField name="location" type="object | null">
+      Where the meeting takes place.
+
+      <Expandable title="location fields">
+        <ResponseField name="type" type="string">
+          Location key, for example `video`.
+        </ResponseField>
+
+        <ResponseField name="label" type="string">
+          Human-readable location name.
+        </ResponseField>
+
+        <ResponseField name="address" type="string | null">
+          Address, only when you show it publicly. `null` otherwise.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="embed_url" type="string | null">
+      Booking URL, for example `https://tikk.chat/joeri/discovery-call`. `null` until you pick a username.
+    </ResponseField>
+  </Expandable>
+
+  <Expandable title="Single-use service">
+    <ResponseField name="type" type="string">
+      `single_use`.
+    </ResponseField>
+
+    <ResponseField name="id" type="integer">
+      Identifier. Pass it to `GET` and `DELETE /services/{id}` and as `service` on `/availability`.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Name of the link.
+    </ResponseField>
+
+    <ResponseField name="description" type="string | null">
+      Note shown at the top of the booking page.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      One of `open`, `used`, `expired` or `disabled`. A used link stays `used` even if it later expires or is switched off.
+    </ResponseField>
+
+    <ResponseField name="url" type="string | null">
+      The private link to send. `null` until you pick a username.
+    </ResponseField>
+
+    <ResponseField name="contact" type="object | null">
+      Who the link is for. `null` when no contact was given.
+
+      <Expandable title="contact fields">
+        <ResponseField name="name" type="string | null">
+          Contact name.
+        </ResponseField>
+
+        <ResponseField name="email" type="string | null">
+          Contact email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="durations" type="array">
+      The offered durations. See [Duration](#duration). Single-use services are never paid, so `price` is `null`.
+    </ResponseField>
+
+    <ResponseField name="expires_at" type="string (date-time) | null">
+      When the link stops working, ISO 8601.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string (date-time) | null">
+      When the link was created, ISO 8601.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
-## Example response
+### Duration
+
+<ResponseField name="minutes" type="integer">
+  Length in minutes.
+</ResponseField>
+
+<ResponseField name="price" type="integer | null">
+  Price in minor currency units. `7500` is €75.00. `null` for a free duration.
+</ResponseField>
+
+<ResponseField name="currency" type="string">
+  ISO 4217 currency code. Always `EUR`.
+</ResponseField>
+
+### Single-use status
+
+| `status`   | Meaning                              |
+| ---------- | ------------------------------------ |
+| `open`     | Can be booked.                       |
+| `used`     | Booked. The link no longer works.    |
+| `expired`  | Past `expires_at` without a booking. |
+| `disabled` | Switched off in Tikk.                |
+
+## Example responses
+
+A default service:
 
 ```json
 {
   "data": {
+    "type": "default",
+    "id": 48213,
     "slug": "intro-call",
     "title": "Intro call",
     "description": "A first chat to see if we're a fit.",
@@ -55,11 +200,30 @@ curl https://app.tikk.chat/api/v1/services/intro-call \
 }
 ```
 
+A single-use service:
+
+```json
+{
+  "data": {
+    "type": "single_use",
+    "id": 73920,
+    "title": "Intro call for Sam",
+    "description": null,
+    "status": "open",
+    "url": "https://tikk.chat/jane/Xk3pQ9aB2c/intro-call-for-sam",
+    "contact": { "name": "Sam Smith", "email": "sam@example.com" },
+    "durations": [{ "minutes": 30, "price": null, "currency": "EUR" }],
+    "expires_at": "2026-10-31T09:00:00+00:00",
+    "created_at": "2026-10-01T09:00:00+00:00"
+  }
+}
+```
+
 ## Errors
 
 | Status | Meaning                                                                                         |
 | ------ | ----------------------------------------------------------------------------------------------- |
 | `401`  | Missing or invalid credential.                                                                  |
-| `403`  | Your credential does not have the `profile.read` scope.                                         |
-| `404`  | No bookable service with this slug on your account.                                             |
+| `403`  | Your credential does not have the `services.read` scope.                                        |
+| `404`  | No bookable service with this id on your account.                                               |
 | `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

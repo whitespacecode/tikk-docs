@@ -100,8 +100,16 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
       The service this booking was made against.
 
       <Expandable title="service fields">
-        <ResponseField name="slug" type="string">
-          URL-safe service identifier.
+        <ResponseField name="type" type="string">
+          `default` or `single_use`.
+        </ResponseField>
+
+        <ResponseField name="id" type="integer">
+          Service identifier, as used by [`GET /services/{id}`](/api-reference/services/get-service). Present for both types.
+        </ResponseField>
+
+        <ResponseField name="slug" type="string | null">
+          URL-safe name of a default service. `null` for single-use services.
         </ResponseField>
 
         <ResponseField name="title" type="string">
@@ -114,10 +122,6 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
 
         <ResponseField name="max_attendees" type="integer | null">
           Seat cap for group services. `null` for one-to-one or uncapped services.
-        </ResponseField>
-
-        <ResponseField name="is_personal_invite" type="boolean">
-          `true` if this service was booked via a private link not listed on your public profile.
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -193,11 +197,12 @@ curl https://app.tikk.chat/api/v1/bookings/1234567 \
       }
     ],
     "service": {
+      "type": "default",
+      "id": 48213,
       "slug": "strategy-session",
       "title": "Strategy session",
       "is_group": true,
-      "max_attendees": 5,
-      "is_personal_invite": false
+      "max_attendees": 5
     },
     "location": {
       "type": "in_person",

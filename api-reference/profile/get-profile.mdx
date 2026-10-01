@@ -4,7 +4,7 @@ sidebarTitle: "GET /profile"
 description: "Fetch your public profile: username, name, bio, avatar, logo, booking page URL and plan."
 ---
 
-The `/profile` endpoint returns your public Tikk presence: your handle, display name, bio, branding assets and plan. Your services have their own endpoint, [`GET /services`](/api-reference/services/list-services). Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
+The `/profile` endpoint returns your public Tikk presence: your handle, display name, bio, branding assets and plan. Your services have their own endpoint, [`GET /services`](/api-reference/services/list-services), with its own scope. Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
 
 ## Endpoint
 

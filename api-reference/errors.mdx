@@ -31,7 +31,7 @@ Check the `message` value for a human-readable description. Don't rely on the ex
 
 ## Plan required (403)
 
-A scope that needs Tikk Pro returns `403` with an extra `error` field when the account is on Free:
+A scope that needs Tikk Pro returns `403` with an extra `error` field when the account is on Free. Creating a default service beyond your plan's limit returns the same body:
 
 ```json
 {
@@ -46,7 +46,7 @@ Branch on `error` to show an upgrade prompt. See [Scopes](/api-reference/scopes#
 
 ## Conflict (409)
 
-`DELETE /invites/{id}` returns `409` for a link that has already been booked. Booked links can't be deleted.
+`DELETE /services/{id}` returns `409` for a single-use service that has already been booked, and `PATCH /services/{id}` returns `409` for any single-use service.
 
 ## Validation error body (422)
 
@@ -105,4 +105,4 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 
 ## 404 and user isolation
 
-The API enforces strict user isolation. A booking ID, invite ID or service slug that exists but belongs to another user returns `404 Not Found`, not `403 Forbidden`. The API never confirms whether a resource exists outside your account. On a `404`, check the ID or slug belongs to a resource on your account before assuming it doesn't exist.
+The API enforces strict user isolation. A booking ID, service ID or service slug that exists but belongs to another user returns `404 Not Found`, not `403 Forbidden`. The API never confirms whether a resource exists outside your account. On a `404`, check the ID or slug belongs to a resource on your account before assuming it doesn't exist.

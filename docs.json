@@ -99,13 +99,12 @@
               "api-reference/profile/get-profile",
               "api-reference/services/list-services",
               "api-reference/services/get-service",
+              "api-reference/services/create-service",
+              "api-reference/services/update-service",
+              "api-reference/services/delete-service",
               "api-reference/availability/list-availability",
               "api-reference/bookings/list-bookings",
-              "api-reference/bookings/get-booking",
-              "api-reference/invites/list-invites",
-              "api-reference/invites/get-invite",
-              "api-reference/invites/create-invite",
-              "api-reference/invites/delete-invite"
+              "api-reference/bookings/get-booking"
             ]
           }
         ]
