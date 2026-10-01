@@ -8,15 +8,38 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 ## Available scopes
 
-| Scope               | Required for                          | Grants                                       |
-| ------------------- | ------------------------------------- | -------------------------------------------- |
-| `profile.read`      | `GET /profile`                        | Public profile, username and active services |
-| `availability.read` | `GET /availability`                   | Available time slots                         |
-| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}` | Existing bookings                            |
+| Scope               | Required for                                              | Grants                                       | Plan |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------- | ---- |
+| none                | `GET /token`                                              | Any valid credential can call it             | Free |
+| `profile.read`      | `GET /profile`, `GET /services`, `GET /services/{slug}`   | Public profile, username and services        | Free |
+| `availability.read` | `GET /availability`                                       | Available time slots                         | Free |
+| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            | Pro  |
+| `invites.read`      | `GET /invites`, `GET /invites/{id}`                       | Single-use links                             | Free |
+| `invites.write`     | `POST /invites`, `DELETE /invites/{id}`                   | Create and delete single-use links           | Free |
+
+## Plans
+
+What a credential can do depends on the plan of the Tikk account it belongs to, not on the developer who built the app.
+
+- Free scopes work on every plan.
+- Pro scopes can be granted on any plan, but only work while the account is on Tikk Pro. Calls from a Free account return `403` with `"error": "plan_required"`:
+
+```json
+{
+  "message": "This endpoint requires the Tikk account to be on the Pro plan.",
+  "error": "plan_required",
+  "required_plan": "pro",
+  "upgrade_url": "https://app.tikk.chat/billing"
+}
+```
+
+Nothing needs to be reconnected or reissued when the plan changes. After an upgrade the same credential works immediately. After a downgrade, Pro calls return `plan_required` again.
+
+To adapt your UI up front, call [`GET /token`](/api-reference/token/get-token). It lists your credential's scopes with `available: true` or `false`. Prefer it over hard-coding which scopes need Pro.
 
 ## API keys
 
-API keys created under **Settings → API Keys** carry all three scopes automatically. No extra configuration needed. A key is ready to call any endpoint as soon as you create it.
+When you create a key under **Settings → API Keys**, you choose which scopes it carries. Pick at least one. A key can only call endpoints for the scopes you gave it. You can have up to 10 active keys.
 
 ## OAuth tokens
 
@@ -38,14 +61,15 @@ If you call an endpoint without the required scope, the API responds with `403 F
 
 ```json
 {
-  "message": "Invalid scope(s) provided."
+  "message": "Missing required scope.",
+  "scopes": ["bookings.read"]
 }
 ```
 
-This response is the same whether the scope was never requested (OAuth token) or the credential is otherwise valid. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
+`scopes` lists the scope or scopes the endpoint needs. A credential that holds the scope but sits on a Free account gets `plan_required` instead. See [Plans](#plans). Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
 
 <Tip>
   Request the minimum scopes your integration needs. Fewer scopes means smaller
   impact if a token leaks. An attacker with a `profile.read`-only token can't
-  reach bookings data.
+  reach bookings data or create invites.
 </Tip>

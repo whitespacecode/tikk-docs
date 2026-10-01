@@ -1,10 +1,10 @@
 ---
-title: "Tikk REST API. Profile, availability and bookings"
+title: "Tikk REST API. Profile, services, availability, bookings and invites"
 sidebarTitle: "Overview"
-description: "Programmatic access to your profile, availability and bookings. Base URL https://app.tikk.chat/api/v1. JSON responses."
+description: "Programmatic access to your profile, services, availability, bookings and single-use links. Base URL https://app.tikk.chat/api/v1. JSON responses."
 ---
 
-The Tikk API is a read-only REST API for your own data. Your public profile and services, your available time slots and the bookings people have made with you. Every endpoint responds with JSON and requires a valid bearer token. No public, unauthenticated routes.
+The Tikk API is a REST API for your own data. Your public profile and services, your available time slots, the bookings people have made with you and your single-use links. Reading is the default. The only write endpoints create and delete single-use links. Every endpoint responds with JSON and requires a valid bearer token. No public, unauthenticated routes.
 
 ## Base URL
 
@@ -31,8 +31,20 @@ https://app.tikk.chat/api/v1
 Use the cards below to jump to each endpoint's reference page.
 
 <CardGroup cols={2}>
+  <Card title="GET /token" icon="key" href="/api-reference/token/get-token">
+    See which scopes your credential holds and whether they work on your plan.
+  </Card>
+
   <Card title="GET /profile" icon="user" href="/api-reference/profile/get-profile">
-    Retrieve your public profile, username and active services.
+    Retrieve your public profile, username and plan.
+  </Card>
+
+  <Card title="GET /services" icon="layers" href="/api-reference/services/list-services">
+    List the services visitors can book right now.
+  </Card>
+
+  <Card title="GET /services/{slug}" icon="layers" href="/api-reference/services/get-service">
+    Look up a single service by its slug.
   </Card>
 
 <Card
@@ -53,6 +65,22 @@ Use the cards below to jump to each endpoint's reference page.
 
   <Card title="GET /bookings/{id}" icon="bookmark" href="/api-reference/bookings/get-booking">
     Look up a single booking by its unique identifier.
+  </Card>
+
+  <Card title="GET /invites" icon="link" href="/api-reference/invites/list-invites">
+    List your single-use booking links.
+  </Card>
+
+  <Card title="GET /invites/{id}" icon="link" href="/api-reference/invites/get-invite">
+    Look up a single-use link by its id.
+  </Card>
+
+  <Card title="POST /invites" icon="plus" href="/api-reference/invites/create-invite">
+    Create a single-use link for one person.
+  </Card>
+
+  <Card title="DELETE /invites/{id}" icon="trash-2" href="/api-reference/invites/delete-invite">
+    Delete a single-use link that hasn't been booked.
   </Card>
 </CardGroup>
 

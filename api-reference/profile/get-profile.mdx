@@ -1,10 +1,10 @@
 ---
 title: "GET /profile. Retrieve your public profile and services"
 sidebarTitle: "GET /profile"
-description: "Fetch your public profile. Username, bio, avatar and all active services with slugs and embed URLs, in one request."
+description: "Fetch your public profile: username, name, bio, avatar, logo, booking page URL and plan."
 ---
 
-The `/profile` endpoint returns everything that makes up your public Tikk presence: your handle, display name, bio, branding assets and the full list of services you have published. Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
+The `/profile` endpoint returns your public Tikk presence: your handle, display name, bio, branding assets and plan. Your services have their own endpoint, [`GET /services`](/api-reference/services/list-services). Integrations commonly read this endpoint once at startup to grab the `username` needed for the embed script and the `profile_url` to link visitors directly to your booking page.
 
 ## Endpoint
 
@@ -62,23 +62,8 @@ This endpoint accepts no query parameters.
   has been claimed.
 </ResponseField>
 
-<ResponseField name="services" type="array">
-  All active services published on your profile.
-
-  <Expandable title="ProfileService">
-    <ResponseField name="slug" type="string">
-      URL-safe identifier for the service. Pass this as the `service` query parameter on `/availability`.
-    </ResponseField>
-
-    <ResponseField name="title" type="string">
-      Human-readable service name shown on the booking page.
-    </ResponseField>
-
-    <ResponseField name="embed_url" type="string | null">
-      Fully-qualified booking URL for this service (e.g. `https://tikk.chat/joeri/discovery-call`). `null` until you pick a username.
-    </ResponseField>
-
-  </Expandable>
+<ResponseField name="plan" type="string">
+  The plan of your Tikk account. One of `free` or `pro`. Use it to show or hide Pro-only features up front.
 </ResponseField>
 
 ## Example response
@@ -93,18 +78,7 @@ This endpoint accepts no query parameters.
   "logo_url": null,
   "profile_url": "https://tikk.chat/joeri",
   "profile_complete": true,
-  "services": [
-    {
-      "slug": "discovery-call",
-      "title": "Discovery call",
-      "embed_url": "https://tikk.chat/joeri/discovery-call"
-    },
-    {
-      "slug": "strategy-session",
-      "title": "Strategy session",
-      "embed_url": "https://tikk.chat/joeri/strategy-session"
-    }
-  ]
+  "plan": "pro"
 }
 ```
 
@@ -115,8 +89,7 @@ This endpoint accepts no query parameters.
 </Note>
 
 <Note>
-  `profile_complete` is `false` and both `profile_url` and all `embed_url`
-  values are `null` until you claim a username in your Tikk account settings.
+  `profile_complete` is `false` and `profile_url` is `null` until you claim a username in your Tikk account settings.
   Bookings cannot be received while `profile_complete` is `false`.
 </Note>
 
@@ -125,5 +98,5 @@ This endpoint accepts no query parameters.
 | Status | Meaning                                                                                         |
 | ------ | ----------------------------------------------------------------------------------------------- |
 | `401`  | Missing or invalid API key.                                                                     |
-| `403`  | Your API key does not have the `profile.read` scope.                                            |
+| `403`  | Your credential does not have the `profile.read` scope.                                            |
 | `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

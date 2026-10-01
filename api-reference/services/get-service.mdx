@@ -1,0 +1,65 @@
+---
+title: "GET /services/{slug}. Retrieve a single service"
+sidebarTitle: "GET /services/{slug}"
+description: "Fetch one bookable service by slug, with durations, prices, location and booking URL."
+---
+
+The `/services/{slug}` endpoint returns a single service. A slug that isn't bookable right now returns `404`, exactly as it does on your public booking page.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/services/{slug}
+```
+
+**Required scope:** `profile.read`
+
+## Path parameters
+
+<ParamField path="slug" type="string" required>
+  The service `slug`, as returned by [`GET /services`](/api-reference/services/list-services).
+</ParamField>
+
+## Example request
+
+```bash
+curl https://app.tikk.chat/api/v1/services/intro-call \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Response schema
+
+<ResponseField name="data" type="object">
+  The matching Service object. Every field is described on [List services](/api-reference/services/list-services#response-schema).
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "data": {
+    "slug": "intro-call",
+    "title": "Intro call",
+    "description": "A first chat to see if we're a fit.",
+    "is_default": true,
+    "is_group": false,
+    "max_attendees": null,
+    "requires_approval": true,
+    "durations": [
+      { "minutes": 30, "price": null, "currency": "EUR" },
+      { "minutes": 60, "price": 7500, "currency": "EUR" }
+    ],
+    "location": { "type": "video", "label": "Video Meeting", "address": null },
+    "embed_url": "https://tikk.chat/jane/intro-call"
+  }
+}
+```
+
+## Errors
+
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid credential.                                                                  |
+| `403`  | Your credential does not have the `profile.read` scope.                                         |
+| `404`  | No bookable service with this slug on your account.                                             |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

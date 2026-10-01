@@ -1,0 +1,51 @@
+---
+title: "GET /invites. List your single-use links"
+sidebarTitle: "GET /invites"
+description: "Paginated list of your single-use booking links, newest first, with status, contact and expiry."
+---
+
+The `/invites` endpoint returns your single-use links, newest first. A single-use link is a private booking link for one person, spent once it's booked. Every booking made through one is accepted straight away and is never paid.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/invites
+```
+
+**Required scope:** `invites.read`
+
+## Query parameters
+
+<ParamField query="per_page" type="integer">
+  Number of links per page. Between `1` and `100`. Defaults to `25`.
+</ParamField>
+
+## Example request
+
+```bash
+curl "https://app.tikk.chat/api/v1/invites?per_page=10" \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Response schema
+
+<ResponseField name="data" type="array">
+  Invite objects, newest first. Every field is described on [Get invite](/api-reference/invites/get-invite#response-schema).
+</ResponseField>
+
+<ResponseField name="links" type="object">
+  Pagination links: `first`, `last`, `prev` and `next`.
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Pagination metadata such as `current_page`, `per_page`, `total` and `last_page`.
+</ResponseField>
+
+## Errors
+
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid credential.                                                                  |
+| `403`  | Your credential does not have the `invites.read` scope.                                         |
+| `422`  | `per_page` is not an integer between 1 and 100.                                                 |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

@@ -23,15 +23,16 @@ curl https://app.tikk.chat/api/v1/profile \
 
 ## API keys
 
-API keys are the simplest credential type. They are tied to your own Tikk account, never expire on their own and automatically carry all available scopes. Use them for scripts, automation and any server-side integration where you are accessing your own data.
+API keys are the simplest credential type. They are tied to your own Tikk account, never expire on their own and carry the scopes you pick when you create them. Use them for scripts, automation and any server-side integration where you are accessing your own data.
 
 <Steps>
   <Step title="Open API Keys settings">
     Go to **Settings → API Keys** in your Tikk account dashboard.
   </Step>
   <Step title="Create a new key">
-    Click **Create new key** and give it a descriptive name so you can identify
-    it later (for example, `zapier-integration` or `analytics-script`).
+    Click **Create new key**, give it a descriptive name (for example,
+    `zapier-integration` or `analytics-script`) and choose its
+    [scopes](/api-reference/scopes). Give it only what the integration needs.
   </Step>
   <Step title="Copy the key immediately">
     Copy the key. It starts with `tikk_sk_` and is shown **only once**. Tikk

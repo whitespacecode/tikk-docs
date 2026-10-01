@@ -1,0 +1,136 @@
+---
+title: "GET /services. List your bookable services"
+sidebarTitle: "GET /services"
+description: "The services visitors can book right now, with durations, prices, location and booking URL. Default service first."
+---
+
+The `/services` endpoint returns the services visitors can book on your booking page right now: active ones, within your plan's service limit. The default service comes first. It replaces the `services` array that `/profile` used to return.
+
+Single-use links aren't services. They live under [`/invites`](/api-reference/invites/list-invites).
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/services
+```
+
+**Required scope:** `profile.read`
+
+## Example request
+
+```bash
+curl https://app.tikk.chat/api/v1/services \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Request parameters
+
+This endpoint accepts no query parameters. The list isn't paginated.
+
+## Response schema
+
+<ResponseField name="data" type="array">
+  Your bookable services, default first.
+
+  <Expandable title="Service">
+    <ResponseField name="slug" type="string">
+      URL-safe identifier. Pass it as the `service` parameter on `/availability` or `POST /invites`.
+    </ResponseField>
+
+    <ResponseField name="title" type="string">
+      Service name shown on the booking page.
+    </ResponseField>
+
+    <ResponseField name="description" type="string | null">
+      Description shown on the booking page.
+    </ResponseField>
+
+    <ResponseField name="is_default" type="boolean">
+      `true` for the service your booking page opens on.
+    </ResponseField>
+
+    <ResponseField name="is_group" type="boolean">
+      `true` if several people can book the same slot.
+    </ResponseField>
+
+    <ResponseField name="max_attendees" type="integer | null">
+      Seat cap for group services. `null` otherwise.
+    </ResponseField>
+
+    <ResponseField name="requires_approval" type="boolean">
+      `true` if you accept each booking by hand.
+    </ResponseField>
+
+    <ResponseField name="durations" type="array">
+      The durations a booker can pick.
+
+      <Expandable title="Duration">
+        <ResponseField name="minutes" type="integer">
+          Length in minutes.
+        </ResponseField>
+
+        <ResponseField name="price" type="integer | null">
+          Price in minor currency units. `7500` is €75.00. `null` for a free duration.
+        </ResponseField>
+
+        <ResponseField name="currency" type="string">
+          ISO 4217 currency code. Always `EUR`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="location" type="object | null">
+      Where the meeting takes place.
+
+      <Expandable title="location fields">
+        <ResponseField name="type" type="string">
+          Location key, for example `video`.
+        </ResponseField>
+
+        <ResponseField name="label" type="string">
+          Human-readable location name.
+        </ResponseField>
+
+        <ResponseField name="address" type="string | null">
+          Address, only when you show it publicly. `null` otherwise.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="embed_url" type="string | null">
+      Booking URL for this service, for example `https://tikk.chat/joeri/discovery-call`. `null` until you pick a username.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "data": [
+    {
+      "slug": "intro-call",
+      "title": "Intro call",
+      "description": "A first chat to see if we're a fit.",
+      "is_default": true,
+      "is_group": false,
+      "max_attendees": null,
+      "requires_approval": true,
+      "durations": [
+        { "minutes": 30, "price": null, "currency": "EUR" },
+        { "minutes": 60, "price": 7500, "currency": "EUR" }
+      ],
+      "location": { "type": "video", "label": "Video Meeting", "address": null },
+      "embed_url": "https://tikk.chat/jane/intro-call"
+    }
+  ]
+}
+```
+
+## Errors
+
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid credential.                                                                  |
+| `403`  | Your credential does not have the `profile.read` scope.                                         |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |

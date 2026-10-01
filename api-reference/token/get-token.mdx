@@ -1,0 +1,74 @@
+---
+title: "GET /token. Check what your credential can do"
+sidebarTitle: "GET /token"
+description: "List the scopes your credential holds and whether each one works on the account's current plan."
+---
+
+The `/token` endpoint describes the credential making the request: the scopes it holds and whether each one works on the Tikk account's current plan. Call it on startup to show or hide features instead of hard-coding which scopes need Pro.
+
+## Endpoint
+
+```text
+GET https://app.tikk.chat/api/v1/token
+```
+
+**Required scope:** none. Any valid credential can call it.
+
+## Example request
+
+```bash
+curl https://app.tikk.chat/api/v1/token \
+  -H "Authorization: Bearer {YOUR_API_KEY}"
+```
+
+## Request parameters
+
+This endpoint accepts no query parameters.
+
+## Response schema
+
+<ResponseField name="plan" type="string">
+  The plan of the Tikk account the credential belongs to. One of `free` or `pro`.
+</ResponseField>
+
+<ResponseField name="scopes" type="array">
+  Every scope the credential holds.
+
+  <Expandable title="Scope">
+    <ResponseField name="id" type="string">
+      The scope identifier, for example `bookings.read`.
+    </ResponseField>
+
+    <ResponseField name="available" type="boolean">
+      `true` if calls using this scope work right now. `false` if the scope needs a plan the account isn't on.
+    </ResponseField>
+
+    <ResponseField name="reason" type="string">
+      Only present when `available` is `false`. Currently always `plan_required`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example response
+
+```json
+{
+  "plan": "free",
+  "scopes": [
+    { "id": "profile.read", "available": true },
+    { "id": "bookings.read", "available": false, "reason": "plan_required" }
+  ]
+}
+```
+
+<Note>
+  Check `available` rather than hard-coding which scopes need Pro. Nothing needs
+  to be reconnected when the plan changes. See [Scopes](/api-reference/scopes#plans).
+</Note>
+
+## Errors
+
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `401`  | Missing or invalid credential.                                                                  |
+| `429`  | Rate limit exceeded. Back off and retry after the period indicated in the `Retry-After` header. |
