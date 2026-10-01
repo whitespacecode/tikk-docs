@@ -11,7 +11,7 @@ The Tikk API uses standard HTTP status codes to signal success and failure. Ever
 | Status                     | When it occurs                                                               |
 | -------------------------- | ---------------------------------------------------------------------------- |
 | `401 Unauthorized`         | No credential was sent or the credential is revoked, expired or unrecognized |
-| `403 Forbidden`            | The credential lacks the required scope or the scope needs the Pro plan     |
+| `403 Forbidden`            | The credential lacks the required scope or the request needs the Pro plan   |
 | `404 Not Found`            | The requested resource does not exist on your account                        |
 | `409 Conflict`             | The request can't be applied to the resource as it is now                    |
 | `422 Unprocessable Entity` | One or more query or body parameters failed validation                       |
@@ -31,11 +31,11 @@ Check the `message` value for a human-readable description. Don't rely on the ex
 
 ## Plan required (403)
 
-A scope that needs Tikk Pro returns `403` with an extra `error` field when the account is on Free. Creating a default service beyond your plan's limit returns the same body:
+Creating a default service beyond the Free plan's limit returns `403` with an extra `error` field:
 
 ```json
 {
-  "message": "This endpoint requires the Tikk account to be on the Pro plan.",
+  "message": "Upgrade to Pro to create more than 1 service.",
   "error": "plan_required",
   "required_plan": "pro",
   "upgrade_url": "https://app.tikk.chat/billing"

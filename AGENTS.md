@@ -41,7 +41,7 @@ Nav paths, when you cite them, must match the real sidebar: **Inbox · Calendar 
 - **Documentation tab** — for hosts: coaches, tutors, consultants. Describe behaviour in product language. No `<ResponseField>` blocks, no JSON response bodies, no field-name tables. Where a concept has an API counterpart, link to the API Reference page instead of restating its schema.
 - **API Reference tab** — for developers. Field-level truth lives here and only here.
 
-**`api-reference/openapi.yaml` is the single source for endpoints.** Each endpoint page is only frontmatter (`openapi: "/api-reference/openapi.yaml METHOD /path"`) plus the odd `<Note>` or `<Tip>`. Parameters, schemas, examples and errors come from the spec, so never add `<ParamField>`, `<ResponseField>` or example blocks to those pages. When the API in the `tikk` repo changes, update the spec and check it with `npx mint validate`. The developer portal links here instead of keeping its own reference.
+**`api-reference/openapi.yaml` is the single source for endpoints.** Each endpoint page is only frontmatter (`openapi: "/api-reference/openapi.yaml METHOD /path"`) plus the odd `<Note>` or `<Tip>`. Parameters, schemas, examples and errors come from the spec, so never add `<ParamField>`, `<ResponseField>` or example blocks to those pages. When the API in the `tikk` repo changes, update the spec and check it with `npx mint validate`. The developer portal (`tikk` repo) renders its own API reference from this same file, fetched from docs.tikk.chat and cached for 10 minutes, so a spec change reaches both sites once it's deployed.
 
 Don't document:
 

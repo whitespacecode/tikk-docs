@@ -8,33 +8,19 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 ## Available scopes
 
-| Scope               | Required for                                              | Grants                                       | Plan |
-| ------------------- | --------------------------------------------------------- | -------------------------------------------- | ---- |
-| `profile.read`      | `GET /profile`                                            | Public profile, username and plan            | Free |
-| `services.read`     | `GET /services`, `GET /services/{id}`                     | Your default and single-use services         | Free |
-| `services.write`    | `POST /services`, `PATCH /services/{id}`, `DELETE /services/{id}` | Create, edit and delete your services and single-use links | Free |
-| `availability.read` | `GET /availability`                                       | Available time slots                         | Free |
-| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            | Pro  |
+| Scope               | Required for                                              | Grants                                       |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------- |
+| `profile.read`      | `GET /profile`                                            | Public profile, username and plan            |
+| `services.read`     | `GET /services`, `GET /services/{id}`                     | Your default and single-use services         |
+| `services.write`    | `POST /services`, `PATCH /services/{id}`, `DELETE /services/{id}` | Create, edit and delete your services and single-use links |
+| `availability.read` | `GET /availability`                                       | Available time slots                         |
+| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            |
 
 ## Plans
 
-What a credential can do depends on the plan of the Tikk account it belongs to, not on the developer who built the app.
+Every scope works on every plan, Free included. The API follows the plan limits of the Tikk account it acts for, not of the developer who built the app. Creating a service beyond the Free limit, for example, returns `403` with `"error": "plan_required"`, just like it would be refused in the app. See [Errors](/api-reference/errors#plan-required-403).
 
-- Free scopes work on every plan.
-- Pro scopes can be granted on any plan, but only work while the account is on Tikk Pro. Calls from a Free account return `403` with `"error": "plan_required"`:
-
-```json
-{
-  "message": "This endpoint requires the Tikk account to be on the Pro plan.",
-  "error": "plan_required",
-  "required_plan": "pro",
-  "upgrade_url": "https://app.tikk.chat/billing"
-}
-```
-
-Nothing needs to be reconnected or reissued when the plan changes. After an upgrade the same credential works immediately. After a downgrade, Pro calls return `plan_required` again.
-
-To adapt your UI up front, read `plan` from [`GET /profile`](/api-reference/profile/get-profile). Pro scopes only work when it is `pro`.
+To adapt your UI up front, read `plan` from [`GET /profile`](/api-reference/profile/get-profile).
 
 ## API keys
 
@@ -65,7 +51,7 @@ If you call an endpoint without the required scope, the API responds with `403 F
 }
 ```
 
-`scopes` lists the scope or scopes the endpoint needs. A credential that holds the scope but sits on a Free account gets `plan_required` instead. See [Plans](#plans). Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
+`scopes` lists the scope or scopes the endpoint needs. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
 
 <Tip>
   Request the minimum scopes your integration needs. Fewer scopes means smaller

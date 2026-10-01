@@ -494,8 +494,7 @@ paths:
         `?status=accepted&from=2026-08-17&order=asc` walks your upcoming
         confirmed schedule forwards.
 
-        **Scope:** `bookings.read` · **Plan:** Pro. A Free account gets `403`
-        with `plan_required`.
+        **Scope:** `bookings.read`
       tags: [Bookings]
       security:
         - bearerAuth: [bookings.read]
@@ -548,7 +547,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#/components/responses/ProScopeForbidden'
+          $ref: '#/components/responses/MissingScope'
         '422':
           $ref: '#/components/responses/ValidationFailed'
         '429':
@@ -561,8 +560,7 @@ paths:
       description: |
         Returns one booking, the same full object as in the list.
 
-        **Scope:** `bookings.read` · **Plan:** Pro. A Free account gets `403`
-        with `plan_required`.
+        **Scope:** `bookings.read`
       tags: [Bookings]
       security:
         - bearerAuth: [bookings.read]
@@ -593,7 +591,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#/components/responses/ProScopeForbidden'
+          $ref: '#/components/responses/MissingScope'
         '404':
           $ref: '#/components/responses/NotFound'
         '429':
@@ -660,26 +658,6 @@ components:
           examples:
             missingScope:
               $ref: '#/components/examples/MissingScope'
-    ProScopeForbidden:
-      description: |
-        The credential doesn't carry `bookings.read`, or the account is on Free
-        and this scope needs Pro (`plan_required`).
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: '#/components/schemas/MissingScopeError'
-              - $ref: '#/components/schemas/PlanRequiredError'
-          examples:
-            missingScope:
-              $ref: '#/components/examples/MissingScope'
-            planRequired:
-              summary: Account on Free
-              value:
-                message: This endpoint requires the Tikk account to be on the Pro plan.
-                error: plan_required
-                required_plan: pro
-                upgrade_url: https://app.tikk.chat/billing
     NotFound:
       description: |
         Nothing with this id on your account. Ids that belong to another
@@ -800,7 +778,7 @@ components:
         plan:
           type: string
           enum: [free, pro]
-          description: Your plan. Pro scopes only work on `pro`, so use it to hide or badge Pro features up front.
+          description: Your plan. Use it to hide or badge Pro features, like custom slugs or group services, up front.
           example: pro
       required: [username, name, title, bio, avatar_url, logo_url, profile_url, profile_complete, plan]
 
@@ -822,6 +800,7 @@ components:
       required: [minutes, price, currency]
 
     DefaultService:
+      title: Default service
       type: object
       description: A permanent booking page, such as "Intro call".
       properties:
@@ -872,6 +851,7 @@ components:
       required: [type, id, slug, title, description, is_default, is_group, max_attendees, requires_approval, durations, location, embed_url]
 
     SingleUseService:
+      title: Single-use service
       type: object
       description: A private booking link for one person, spent once it's booked. Bookings made through one are accepted straight away and never paid.
       properties:
