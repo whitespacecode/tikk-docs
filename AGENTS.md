@@ -32,7 +32,7 @@ Nav paths, when you cite them, must match the real sidebar: **Inbox · Calendar 
 - Use sentence case for headings
 - Bold for UI elements: Click **Settings**
 - Code formatting for file names, commands, paths and code references
-- Prices in euros, e.g. €12/mo
+- Prices in euros, e.g. €12/mo. Pro is €12/mo, or €9/mo billed annually (€108/year); when quoting the yearly price, say "billed annually"
 
 ## Content boundaries
 
