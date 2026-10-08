@@ -1,0 +1,152 @@
+---
+title: "Webhooks. Booking updates pushed to your URL"
+sidebarTitle: "Webhooks"
+description: "Receive booking events as they happen: events, payload, signature verification, retries and URL rules. A Pro feature."
+---
+
+Webhooks send your booking updates to a URL as they happen, so you don't have to poll [`GET /bookings`](/api-reference/bookings/list-bookings). They're a Pro feature: deliveries go out while the Tikk account is on Pro.
+
+## Set up a webhook
+
+You create webhooks through the API with [`POST /webhooks`](/api-reference/webhooks/create-webhook). The credential needs `webhooks.write` **and** `bookings.read`, because every delivery carries the full booking.
+
+```bash
+curl -X POST https://app.tikk.chat/api/v1/webhooks \
+  -H "Authorization: Bearer tikk_sk_..." \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://yourapp.com/tikk/webhooks", "events": ["booking.confirmed", "booking.cancelled"]}'
+```
+
+A credential only sees the webhooks it created. Webhooks created with an API key appear under **Settings → API Keys**, where the account owner can remove them. Webhooks created by a partner app aren't listed there; disconnecting the app removes them. Revoking an API key removes its webhooks too.
+
+## Events
+
+| Event                 | When it's sent                                                                                       |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| `booking.requested`   | A booking is waiting for you to accept it. Only for services that need manual approval.               |
+| `booking.confirmed`   | A booking is definitely happening: auto-accepted, accepted by you, or a paid booking whose payment went through. |
+| `booking.declined`    | You declined a pending booking, or it expired before you answered.                                    |
+| `booking.cancelled`   | You cancelled the booking, or its payment failed or expired.                                          |
+| `booking.rescheduled` | You moved the booking to another time.                                                                |
+
+<Note>
+  A paid booking is only confirmed once it's paid. If the payment fails, you
+  receive `booking.cancelled` for a booking you never saw confirmed. Group
+  sessions send one event per booked seat.
+</Note>
+
+## Payload
+
+Each delivery is a `POST` with a JSON body. `data.booking` has the same shape as [`GET /bookings/{id}`](/api-reference/bookings/get-booking), as it was at the moment of the event.
+
+```json
+{
+  "id": "evt_01j9x3k6m2c8v4n7q5r0t2w8y6",
+  "type": "booking.rescheduled",
+  "created_at": "2026-10-01T10:00:00+00:00",
+  "data": {
+    "booking": {
+      "id": 1234567,
+      "status": "accepted",
+      "scheduled_at": "2026-10-08T14:00:00+00:00"
+    },
+    "previous_scheduled_at": "2026-10-07T09:00:00+00:00"
+  }
+}
+```
+
+`previous_scheduled_at` is only included on `booking.rescheduled`.
+
+Every delivery carries these headers:
+
+| Header                 | Value                                                          |
+| ---------------------- | -------------------------------------------------------------- |
+| `Tikk-Signature`       | `t=<unix timestamp>,v1=<signature>`. See below.                 |
+| `Tikk-Webhook-Id`      | The event `id`. The same on every retry.                       |
+| `Tikk-Webhook-Event`   | The event type.                                                |
+| `Tikk-Webhook-Attempt` | `1` for the first try, then `2`, `3` and so on.                |
+| `User-Agent`           | `Tikk-Webhooks/1.0`                                            |
+
+## Verify the signature
+
+Every delivery has a `Tikk-Signature` header:
+
+```text
+Tikk-Signature: t=1696154400,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd
+```
+
+`t` is when Tikk sent the request. `v1` is an HMAC-SHA256 of `t`, a dot and the raw request body, signed with your webhook secret. To check a delivery, compute the same HMAC and compare it to `v1`. Then reject requests older than a few minutes, so a captured request can't be replayed.
+
+Your secret is the `signing_secret` returned by `POST /webhooks` if you use an API key, or your app's webhook signing secret from the [developer portal](https://developer.tikk.chat) if you're a partner app.
+
+<CodeGroup>
+
+```javascript Node.js
+const crypto = require("crypto");
+
+const header = req.get("Tikk-Signature");
+const timestamp = header.match(/t=(\d+)/)[1];
+const signatures = [...header.matchAll(/v1=([a-f0-9]+)/g)].map((match) => match[1]);
+
+// Sign "{t}.{raw body}" with your secret and compare it to v1.
+const expected = crypto
+  .createHmac("sha256", process.env.TIKK_WEBHOOK_SECRET)
+  .update(`${timestamp}.${rawBody}`)
+  .digest("hex");
+
+if (!signatures.includes(expected)) {
+  throw new Error("Invalid signature");
+}
+
+// Reject requests older than five minutes.
+if (Date.now() / 1000 - Number(timestamp) > 300) {
+  throw new Error("Signature expired");
+}
+```
+
+```php PHP
+$header = $request->header('Tikk-Signature');
+preg_match('/t=(\d+)/', $header, $timestamp);
+preg_match_all('/v1=([a-f0-9]+)/', $header, $signatures);
+
+// Sign "{t}.{raw body}" with your secret and compare it to v1.
+$expected = hash_hmac('sha256', $timestamp[1].'.'.$request->getContent(), config('services.tikk.webhook_secret'));
+
+if (! in_array($expected, $signatures[1], true)) {
+    abort(400, 'Invalid signature');
+}
+
+// Reject requests older than five minutes.
+if (time() - (int) $timestamp[1] > 300) {
+    abort(400, 'Signature expired');
+}
+```
+
+</CodeGroup>
+
+Use the raw body, before your framework parses the JSON: re-encoded JSON won't match. When a partner app rotates its secret, the header carries a `v1` for the old and the new secret for 24 hours, which is why the examples accept any matching `v1`.
+
+## Respond and retry
+
+- Answer with any `2xx` within 10 seconds. Do slow work after you respond.
+- `408`, `429`, `5xx`, timeouts and connection errors are retried: after 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours and 12 hours.
+- Any other response is final for that event. Answering `410 Gone` also switches the webhook off.
+- Redirects are not followed. Use the final URL.
+
+Delivery is **at least once** and **unordered**. The same event can arrive twice, and a later event can arrive before an earlier one. Deduplicate on `Tikk-Webhook-Id`, order by `created_at`, and fetch [`GET /bookings/{id}`](/api-reference/bookings/get-booking) when you need the current state.
+
+After 5 events in a row fail for good, the webhook is switched off and the account owner is emailed. Fix your endpoint, then switch it back on with [`PATCH /webhooks/{id}`](/api-reference/webhooks/update-webhook) and `{"active": true}`, which also clears the failure count.
+
+## URL rules
+
+The URL must use HTTPS and resolve only to public addresses. Tikk refuses:
+
+- private, loopback, link-local and other reserved IP ranges, in IPv4 and IPv6
+- hostnames like `localhost` or `*.internal`, and Tikk's own domains
+- URLs with a username, password or fragment
+
+The URL is checked when you save it and again before every delivery, so a hostname that later resolves to a private address stops receiving. To test locally, expose your machine through a tunnel such as ngrok or Cloudflare Tunnel.
+
+## Plans
+
+Webhooks need Pro on the Tikk account they belong to. On Free, the webhook endpoints return [`plan_required`](/api-reference/errors#plan-required-403). If the account downgrades, its webhooks pause: nothing is sent and nothing is deleted. Deliveries resume after an upgrade, but events from the paused period aren't replayed.

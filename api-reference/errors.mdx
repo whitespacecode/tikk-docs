@@ -31,16 +31,18 @@ Check the `message` value for a human-readable description. Don't rely on the ex
 
 ## Plan required (403)
 
-Creating a default service beyond the Free plan's limit returns `403` with an extra `error` field:
+A Pro endpoint, like the [webhook](/api-reference/webhooks) endpoints, returns `403` with an extra `error` field when the account is on Free:
 
 ```json
 {
-  "message": "Upgrade to Pro to create more than 1 service.",
+  "message": "This endpoint requires the Tikk account to be on the Pro plan.",
   "error": "plan_required",
   "required_plan": "pro",
   "upgrade_url": "https://app.tikk.chat/billing"
 }
 ```
+
+Creating a default service beyond the Free plan's limit returns the same shape, with its own `message`.
 
 Branch on `error` to show an upgrade prompt. See [Scopes](/api-reference/scopes#plans).
 

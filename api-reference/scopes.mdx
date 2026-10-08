@@ -8,17 +8,25 @@ Scopes control what your credential can access. Each endpoint requires a specifi
 
 ## Available scopes
 
-| Scope               | Required for                                              | Grants                                       |
-| ------------------- | --------------------------------------------------------- | -------------------------------------------- |
-| `profile.read`      | `GET /profile`                                            | Public profile, username and plan            |
-| `services.read`     | `GET /services`, `GET /services/{id}`                     | Your default and single-use services         |
-| `services.write`    | `POST /services`, `PATCH /services/{id}`, `DELETE /services/{id}` | Create, edit and delete your services and single-use links |
-| `availability.read` | `GET /availability`                                       | Available time slots                         |
-| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            |
+| Scope               | Required for                                              | Grants                                       | Plan |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------- | ---- |
+| `profile.read`      | `GET /profile`                                            | Public profile, username and plan            | Free |
+| `services.read`     | `GET /services`, `GET /services/{id}`                     | Your default and single-use services         | Free |
+| `services.write`    | `POST /services`, `PATCH /services/{id}`, `DELETE /services/{id}` | Create, edit and delete your services and single-use links | Free |
+| `availability.read` | `GET /availability`                                       | Available time slots                         | Free |
+| `bookings.read`     | `GET /bookings`, `GET /bookings/{id}`                     | Existing bookings                            | Free |
+| `webhooks.read`     | `GET /webhooks`, `GET /webhooks/{id}`                     | The webhooks this credential set up          | Pro  |
+| `webhooks.write`    | `POST /webhooks`, `PATCH /webhooks/{id}`, `DELETE /webhooks/{id}` | Send your booking updates to a URL. Creating and editing also need `bookings.read` | Pro  |
 
 ## Plans
 
-Every scope works on every plan, Free included. The API follows the plan limits of the Tikk account it acts for, not of the developer who built the app. Creating a service beyond the Free limit, for example, returns `403` with `"error": "plan_required"`, just like it would be refused in the app. See [Errors](/api-reference/errors#plan-required-403).
+What a credential can do depends on the plan of the Tikk account it belongs to, not on the developer who built the app. Reading and managing your data works on every plan. Pro is for automation: [webhooks](/api-reference/webhooks).
+
+- Free scopes work on every plan.
+- Pro scopes can be granted on any plan, but only work while the account is on Tikk Pro. Calls from a Free account return `403` with `"error": "plan_required"`. See [Errors](/api-reference/errors#plan-required-403).
+- Nothing needs to be reconnected or reissued when the plan changes. After an upgrade the same credential works immediately. After a downgrade, Pro calls return `plan_required` again and webhooks pause.
+
+The API also follows the account's plan limits: creating a service beyond the Free limit returns the same `plan_required` error, just like it would be refused in the app.
 
 To adapt your UI up front, read `plan` from [`GET /profile`](/api-reference/profile/get-profile).
 
@@ -51,7 +59,7 @@ If you call an endpoint without the required scope, the API responds with `403 F
 }
 ```
 
-`scopes` lists the scope or scopes the endpoint needs. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
+`scopes` lists the scope or scopes the endpoint needs. A credential that holds them but belongs to a Free account gets `plan_required` instead on Pro endpoints. Check the [Errors](/api-reference/errors) page for the full list of error codes and their meanings.
 
 <Tip>
   Request the minimum scopes your integration needs. Fewer scopes means smaller

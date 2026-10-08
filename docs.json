@@ -125,6 +125,18 @@
               "api-reference/bookings/list-bookings",
               "api-reference/bookings/get-booking"
             ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "webhook",
+            "pages": [
+              "api-reference/webhooks",
+              "api-reference/webhooks/list-webhooks",
+              "api-reference/webhooks/create-webhook",
+              "api-reference/webhooks/get-webhook",
+              "api-reference/webhooks/update-webhook",
+              "api-reference/webhooks/delete-webhook"
+            ]
           }
         ]
       }

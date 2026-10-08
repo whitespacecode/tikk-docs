@@ -7,7 +7,7 @@ info:
   description: |
     A REST API over one Tikk account: its public profile, its services, the
     time slots it has free and the bookings people have made with it. Reading
-    is the default; writing is limited to services.
+    is the default; writing is limited to services and webhooks.
 
     Every response is JSON, every timestamp is ISO 8601 in UTC, and every
     request needs a bearer token: an API key (`tikk_sk_...`) or an OAuth access
@@ -33,6 +33,8 @@ tags:
     description: The time slots you have free.
   - name: Bookings
     description: The bookings people have made with you.
+  - name: Webhooks
+    description: URLs that receive your booking updates as they happen (Pro).
 
 paths:
   /profile:
@@ -597,6 +599,323 @@ paths:
         '429':
           $ref: '#/components/responses/TooManyRequests'
 
+  /webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List your webhooks
+      description: |
+        Returns the webhooks this credential set up, oldest first. Webhooks
+        created by another API key or another app aren't listed.
+
+        **Scope:** `webhooks.read` · **Plan:** Pro
+      tags: [Webhooks]
+      security:
+        - bearerAuth: [webhooks.read]
+      responses:
+        '200':
+          description: Your webhooks.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ProForbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+    post:
+      operationId: createWebhook
+      summary: Create a webhook
+      description: |
+        Starts sending the events you pick to `url`. See
+        [Webhooks](/api-reference/webhooks) for the payload, the signature and
+        retries.
+
+        For an API key the response includes `signing_secret`, the secret this
+        webhook's deliveries are signed with. It's only returned here: store it
+        now. For a partner app, deliveries are signed with the app's secret
+        from the developer portal instead.
+
+        The URL must use HTTPS and resolve only to public addresses. A
+        credential can have up to 10 webhooks, one per URL.
+
+        **Scopes:** `webhooks.write` and `bookings.read` · **Plan:** Pro
+      tags: [Webhooks]
+      security:
+        - bearerAuth: [webhooks.write, bookings.read]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookSubscription'
+            example:
+              url: https://yourapp.com/tikk/webhooks
+              events: [booking.confirmed, booking.cancelled]
+      responses:
+        '201':
+          description: The new webhook, with its signing secret for API keys.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionEnvelope'
+              examples:
+                apiKey:
+                  summary: Created with an API key
+                  value:
+                    data:
+                      id: 1830219341
+                      url: https://yourapp.com/tikk/webhooks
+                      events: [booking.confirmed, booking.cancelled]
+                      status: active
+                      disabled_reason: null
+                      consecutive_failures: 0
+                      signing_secret_source: subscription
+                      signing_secret: tikk_whsec_4f8Kd02LmQx7Rz1VbN6cT9yHs3Ue5Wa
+                      last_success_at: null
+                      last_failure_at: null
+                      created_at: '2026-10-01T09:00:00+00:00'
+                      updated_at: '2026-10-01T09:00:00+00:00'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ProForbidden'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /webhooks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The webhook `id`, as returned by `POST /webhooks`.
+        schema:
+          type: integer
+        example: 1830219341
+
+    get:
+      operationId: getWebhook
+      summary: Get a webhook
+      description: |
+        Returns one webhook this credential set up. The signing secret is never
+        included.
+
+        **Scope:** `webhooks.read` · **Plan:** Pro
+      tags: [Webhooks]
+      security:
+        - bearerAuth: [webhooks.read]
+      responses:
+        '200':
+          description: The webhook.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ProForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+    patch:
+      operationId: updateWebhook
+      summary: Update a webhook
+      description: |
+        Changes the URL or events, or switches the webhook off and on.
+        Switching on a webhook that was switched off after failed deliveries
+        also clears its failure count.
+
+        **Scopes:** `webhooks.write` and `bookings.read` · **Plan:** Pro
+      tags: [Webhooks]
+      security:
+        - bearerAuth: [webhooks.write, bookings.read]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookSubscription'
+            example:
+              active: true
+      responses:
+        '200':
+          description: The updated webhook.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ProForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a webhook
+      description: |
+        Stops and removes the webhook. Deliveries still queued are dropped.
+
+        **Scope:** `webhooks.write` · **Plan:** Pro
+      tags: [Webhooks]
+      security:
+        - bearerAuth: [webhooks.write]
+      responses:
+        '204':
+          description: Deleted. The body is empty.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/ProForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+webhooks:
+  booking.requested:
+    post:
+      operationId: bookingRequested
+      summary: booking.requested
+      description: |
+        A booking is waiting for you to accept it. Only sent for services that need manual approval.
+
+        Signed with the `Tikk-Signature` header. See
+        [Webhooks](/api-reference/webhooks) for how to verify it.
+      tags: [Webhooks]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TikkSignature'
+        - $ref: '#/components/parameters/TikkWebhookId'
+        - $ref: '#/components/parameters/TikkWebhookEvent'
+        - $ref: '#/components/parameters/TikkWebhookAttempt'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWebhookEvent'
+      responses:
+        '2XX':
+          description: Received. Respond within 10 seconds; any other status is retried or dropped as described in Webhooks.
+  booking.confirmed:
+    post:
+      operationId: bookingConfirmed
+      summary: booking.confirmed
+      description: |
+        A booking is definitely happening: auto-accepted, accepted by you, or, for a paid booking, once the payment has gone through. A paid booking is never confirmed before it is paid.
+
+        Signed with the `Tikk-Signature` header. See
+        [Webhooks](/api-reference/webhooks) for how to verify it.
+      tags: [Webhooks]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TikkSignature'
+        - $ref: '#/components/parameters/TikkWebhookId'
+        - $ref: '#/components/parameters/TikkWebhookEvent'
+        - $ref: '#/components/parameters/TikkWebhookAttempt'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWebhookEvent'
+      responses:
+        '2XX':
+          description: Received. Respond within 10 seconds; any other status is retried or dropped as described in Webhooks.
+  booking.declined:
+    post:
+      operationId: bookingDeclined
+      summary: booking.declined
+      description: |
+        You declined a pending booking, or it expired before you answered.
+
+        Signed with the `Tikk-Signature` header. See
+        [Webhooks](/api-reference/webhooks) for how to verify it.
+      tags: [Webhooks]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TikkSignature'
+        - $ref: '#/components/parameters/TikkWebhookId'
+        - $ref: '#/components/parameters/TikkWebhookEvent'
+        - $ref: '#/components/parameters/TikkWebhookAttempt'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWebhookEvent'
+      responses:
+        '2XX':
+          description: Received. Respond within 10 seconds; any other status is retried or dropped as described in Webhooks.
+  booking.cancelled:
+    post:
+      operationId: bookingCancelled
+      summary: booking.cancelled
+      description: |
+        You cancelled the booking, or its payment failed or expired. A paid booking whose payment fails is cancelled without ever having been confirmed.
+
+        Signed with the `Tikk-Signature` header. See
+        [Webhooks](/api-reference/webhooks) for how to verify it.
+      tags: [Webhooks]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TikkSignature'
+        - $ref: '#/components/parameters/TikkWebhookId'
+        - $ref: '#/components/parameters/TikkWebhookEvent'
+        - $ref: '#/components/parameters/TikkWebhookAttempt'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWebhookEvent'
+      responses:
+        '2XX':
+          description: Received. Respond within 10 seconds; any other status is retried or dropped as described in Webhooks.
+  booking.rescheduled:
+    post:
+      operationId: bookingRescheduled
+      summary: booking.rescheduled
+      description: |
+        You moved the booking to another time. `data.previous_scheduled_at` holds the old time.
+
+        Signed with the `Tikk-Signature` header. See
+        [Webhooks](/api-reference/webhooks) for how to verify it.
+      tags: [Webhooks]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TikkSignature'
+        - $ref: '#/components/parameters/TikkWebhookId'
+        - $ref: '#/components/parameters/TikkWebhookEvent'
+        - $ref: '#/components/parameters/TikkWebhookAttempt'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWebhookEvent'
+      responses:
+        '2XX':
+          description: Received. Respond within 10 seconds; any other status is retried or dropped as described in Webhooks.
+
 components:
   securitySchemes:
     bearerAuth:
@@ -627,6 +946,39 @@ components:
         type: integer
         minimum: 1
         default: 1
+    TikkSignature:
+      name: Tikk-Signature
+      in: header
+      required: true
+      description: |
+        `t=<unix timestamp>,v1=<hex HMAC-SHA256 of "{t}.{raw body}">`. During
+        a secret rotation there is one `v1` per valid secret.
+      schema:
+        type: string
+      example: t=1696154400,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd
+    TikkWebhookId:
+      name: Tikk-Webhook-Id
+      in: header
+      required: true
+      description: The event id. Equal to the body's `id` and the same on every retry, so deduplicate on it.
+      schema:
+        type: string
+      example: evt_01j9x3k6m2c8v4n7q5r0t2w8y6
+    TikkWebhookEvent:
+      name: Tikk-Webhook-Event
+      in: header
+      required: true
+      description: The event type, also in the body's `type`.
+      schema:
+        $ref: '#/components/schemas/WebhookEventType'
+    TikkWebhookAttempt:
+      name: Tikk-Webhook-Attempt
+      in: header
+      required: true
+      description: Which attempt this is, starting at 1.
+      schema:
+        type: integer
+      example: 1
 
   headers:
     X-RateLimit-Limit:
@@ -658,6 +1010,29 @@ components:
           examples:
             missingScope:
               $ref: '#/components/examples/MissingScope'
+    ProForbidden:
+      description: |
+        The credential doesn't carry a scope this endpoint needs, or the
+        account is on Free and webhooks need Pro (`plan_required`).
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/MissingScopeError'
+              - $ref: '#/components/schemas/PlanRequiredError'
+          examples:
+            missingScope:
+              summary: Missing scope
+              value:
+                message: Missing required scope.
+                scopes: [webhooks.write]
+            planRequired:
+              summary: Account on Free
+              value:
+                message: This endpoint requires the Tikk account to be on the Pro plan.
+                error: plan_required
+                required_plan: pro
+                upgrade_url: https://app.tikk.chat/billing
     NotFound:
       description: |
         Nothing with this id on your account. Ids that belong to another
@@ -1356,6 +1731,135 @@ components:
           description: Results across all pages.
           example: 87
       required: [current_page, from, last_page, links, path, per_page, to, total]
+
+    WebhookEventType:
+      type: string
+      enum: [booking.requested, booking.confirmed, booking.declined, booking.cancelled, booking.rescheduled]
+
+    WebhookSubscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1830219341
+        url:
+          type: string
+          format: uri
+          example: https://yourapp.com/tikk/webhooks
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+        status:
+          type: string
+          enum: [active, disabled]
+        disabled_reason:
+          type: [string, 'null']
+          enum: [manual, failing, gone, null]
+          description: |
+            Why the webhook is off: `manual` (switched off with `PATCH`),
+            `failing` (5 events in a row failed for good) or `gone` (your
+            endpoint answered `410`).
+        consecutive_failures:
+          type: integer
+          description: Events in a row that failed for good. Resets on any success.
+          example: 0
+        signing_secret_source:
+          type: string
+          enum: [subscription, app]
+          description: |
+            `subscription`: deliveries are signed with the `signing_secret`
+            returned when this webhook was created (API keys). `app`: signed with
+            your app's secret from the developer portal (partner apps).
+        signing_secret:
+          type: string
+          description: Only in the `POST /webhooks` response, and only for API keys.
+          example: tikk_whsec_4f8Kd02LmQx7Rz1VbN6cT9yHs3Ue5Wa
+        last_success_at:
+          type: [string, 'null']
+          format: date-time
+        last_failure_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, url, events, status, disabled_reason, consecutive_failures, signing_secret_source, last_success_at, last_failure_at, created_at, updated_at]
+
+    WebhookSubscriptionEnvelope:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/WebhookSubscription'
+      required: [data]
+
+    WebhookSubscriptionCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookSubscription'
+      required: [data]
+
+    CreateWebhookSubscription:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+          description: HTTPS, resolving only to public addresses. No credentials or fragment.
+        events:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+      required: [url, events]
+
+    UpdateWebhookSubscription:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+        events:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+        active:
+          type: boolean
+          description: '`false` switches the webhook off; `true` switches it back on and clears its failure count.'
+
+    BookingWebhookEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The event id, also sent as `Tikk-Webhook-Id`. The same on every retry.
+          example: evt_01j9x3k6m2c8v4n7q5r0t2w8y6
+        type:
+          $ref: '#/components/schemas/WebhookEventType'
+        created_at:
+          type: string
+          format: date-time
+          description: When the change happened. Events can arrive out of order; use this to order them.
+        data:
+          type: object
+          properties:
+            booking:
+              $ref: '#/components/schemas/Booking'
+            previous_scheduled_at:
+              type: string
+              format: date-time
+              description: Only on `booking.rescheduled`.
+          required: [booking]
+      required: [id, type, created_at, data]
 
     Error:
       type: object
