@@ -30,19 +30,23 @@ If a service has no location of its own, Tikk falls back to the default location
 
 For video meetings, pick which service generates the link under **Settings → Profile → Conferencing**:
 
-| Setting             | What you get                                                                                              |
-| ------------------- | --------------------------------------------------------------------------------------------------------- |
-| **Auto**            | The first available link from your connected calendars. The default and the right choice for most people. |
-| **Google Meet**     | A Meet link. Requires a connected Google Calendar.                                                        |
-| **Microsoft Teams** | A Teams link. Requires a connected Outlook account.                                                       |
-| **Jitsi**           | A Jitsi room. Needs no connected account at all.                                                          |
+| Setting             | What you get                                                                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Auto**            | Follows the calendar bookings are added to: Google Meet for a Google calendar, Teams for an Outlook calendar or Jitsi otherwise. The default. |
+| **Google Meet**     | A Meet link. Requires bookings to be added to a Google calendar.                                                                              |
+| **Microsoft Teams** | A Teams link. Requires bookings to be added to an Outlook calendar.                                                                           |
+| **Jitsi**           | A Jitsi room. Needs no connected account at all.                                                                                              |
 
-Every booking gets its own link. Nothing is a shared, permanent room.
+Google Meet and Teams links are created together with the calendar event, which is why they depend on the calendar you picked under **Availability → Calendars → Calendar to add events to**. See [Calendar sync](/guides/calendar-sync#choose-the-calendar-bookings-are-added-to).
+
+Every booking gets its own link. Nothing is a shared, permanent room. The link in the booker's invite is always the same one as on the event in your calendar.
 
 <Note>
   If your chosen provider can't produce a link (say you picked Google Meet but
-  your Google connection has expired), Tikk falls back to Jitsi rather than
-  sending out an invite with no way to join.
+  bookings go to an Outlook calendar, or your Google connection has expired),
+  Tikk falls back to Jitsi rather than sending out an invite with no way to
+  join. Remove or pause your last Google or Outlook account and a Google Meet
+  or Teams choice switches back to **Auto** on its own.
 </Note>
 
 ## Where the link comes from

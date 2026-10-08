@@ -1,10 +1,17 @@
 ---
 title: "Connect your calendars"
 sidebarTitle: "Calendar sync"
-description: "Connect Google, Outlook or Apple iCloud. Every connected calendar is checked before a slot is offered, so you can't be double booked."
+description: "Connect Google, Outlook or Apple iCloud. Your calendars are checked before a slot is offered, and confirmed bookings land in the one calendar you choose."
 ---
 
-Tikk checks every connected calendar before showing a slot. A dentist appointment, a blocked focus hour, a meeting someone else put in your diary. Any of them removes that slot from your booking page. There's nothing to configure per event and nothing to remember. It's always on.
+Tikk checks your connected calendars before showing a slot. A dentist appointment, a blocked focus hour, a meeting someone else put in your diary. Any of them removes that slot from your booking page. There's nothing to configure per event and nothing to remember. It's always on.
+
+<Frame>
+  <img
+    src="/images/availability-calendars.png"
+    alt="The Calendars tab under Availability, with the calendars checked for conflicts and the calendar bookings are added to"
+  />
+</Frame>
 
 ## Supported calendars
 
@@ -30,11 +37,12 @@ Tikk checks every connected calendar before showing a slot. A dentist appointmen
 ## Connect a calendar
 
 <Steps>
-  <Step title="Open Calendar">
-    Click **Calendar** in the sidebar to reach your calendar connections.
+  <Step title="Open your calendars">
+    Click **Availability** in the sidebar, then the **Calendars** tab.
   </Step>
   <Step title="Add a connection">
-    Under **Add New Connection**, pick Google, Outlook or Apple.
+    With nothing connected yet, pick Google, Outlook or Apple. Once you have a
+    connection, click **Connect calendar account** to add another.
   </Step>
   <Step title="Authorize Tikk">
     Complete the sign-in or for Apple paste your Apple ID and app-specific
@@ -42,28 +50,35 @@ Tikk checks every connected calendar before showing a slot. A dentist appointmen
     busy, write to put confirmed bookings on your calendar.
   </Step>
   <Step title="Choose which calendars count">
-    One account often holds several calendars. Click **Manage calendars** on a
-    connection to pick which of them block your availability. Only the ones you
-    activate are checked.
+    One account often holds several calendars. Under **Calendars to check for
+    conflicts**, click **Checking … calendars** on an account to pick which of
+    them block your availability. Only the ones you switch on are checked. Your
+    main calendar is always checked.
   </Step>
 </Steps>
 
 <Note>
-  The Free plan allows **1 active calendar connection**. Pro is unlimited.
+  The Free plan allows **1 active calendar connection**. Pro is unlimited. On
+  Free with a calendar already connected, **Connect calendar account** shows a
+  lock and takes you to the upgrade.
 </Note>
 
 ## Connection states
 
-| State                     | Meaning                                                                                                                                              |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Synced**                | Working normally and being checked.                                                                                                                  |
-| **Paused**                | Connected but not checked. Free-plan connections beyond the first sit here.                                                                          |
-| **Authorization expired** | The provider revoked access, usually after a password change. Click **Reconnect**; until you do, events from this calendar aren't blocking anything. |
+Each account under **Calendars to check for conflicts** shows how it's doing:
+
+| What you see             | Meaning                                                                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Checking … calendars** | Working normally. Click it to choose which of the account's calendars are checked.                                                                  |
+| **Paused**               | Connected but not checked. Free-plan connections beyond the first sit here. Click **Turn back on** to resume it.                                    |
+| **Reconnect**            | The provider revoked access, usually after a password change. Click **Reconnect**; until you do, events from this calendar aren't blocking anything. |
 
 <Warning>
   An expired connection is the one failure mode that can cause a double booking,
-  because Tikk can no longer see that calendar's events. The dashboard flags it, so reconnect promptly.
+  because Tikk can no longer see that calendar's events. Tikk flags it, so reconnect promptly.
 </Warning>
+
+To remove an account, click the **×** next to it.
 
 If you move from Pro back to Free with several connections, nothing is deleted. Your oldest connection stays active and the rest are paused until you upgrade.
 
@@ -77,8 +92,46 @@ Once connected, Tikk checks your calendars in real time whenever someone opens y
   stay private, they just stop people booking over your evening.
 </Tip>
 
-## Bookings on your calendar
+## Choose the calendar bookings are added to
 
-When a booking is confirmed, Tikk writes an event with the meeting title, the booker's name and the meeting link to **every** connected calendar, not just one. You don't have to copy anything across and whichever calendar you happen to be looking at shows the booking.
+When a booking is confirmed, Tikk adds an event with the meeting title, the booker and the meeting link to **one** calendar. Out of the box that's the main calendar of your first connected account. You can pick any other calendar you're allowed to add events to, from any connected account.
 
-Reschedule or cancel the booking in Tikk and that calendar event is updated or removed to match. See [Manage bookings](/guides/manage-bookings).
+<Steps>
+  <Step title="Open your calendars">
+    Click **Availability** in the sidebar, then the **Calendars** tab.
+  </Step>
+  <Step title="Find the setting">
+    Scroll to **Calendar to add events to**.
+  </Step>
+  <Step title="Open the dropdown">
+    Click the calendar that's shown. Your calendars are listed per account, each
+    with its colour.
+  </Step>
+  <Step title="Pick a calendar">
+    Select the calendar new bookings should go to. Every booking confirmed from
+    now on is added there.
+  </Step>
+</Steps>
+
+<Tip>
+  Want your bookings to stand out? Create a separate calendar, for example
+  "Tikk", in Google, Outlook or Apple and give it its own colour. Then pick it
+  here. Your bookings show up in that colour in your own calendar app and on
+  Tikk's **Calendar** page.
+</Tip>
+
+A few things to know:
+
+- **Don't see a calendar you just created?** Click **Checking … calendars** on that account and click **Refresh**. It then appears in the dropdown.
+- **Read-only calendars aren't listed.** Holiday calendars and calendars someone shared with you to view only can't receive bookings.
+- **Prefer to keep bookings out of your calendars?** Choose **Do not add new events to a calendar**. Bookings still block their slots in Tikk and still reach a connected CRM.
+- **The choice falls back on its own.** If you remove or pause the account your chosen calendar belongs to, new bookings go back to the main calendar of your first connected account.
+- **Your own events in that calendar.** Tikk's bookings always block their slots. For other events you put in that calendar to block slots too, switch it on under **Checking … calendars**.
+
+Reschedule or cancel the booking in Tikk and the calendar event is updated or removed in the calendar it was added to, even if you've chosen a different calendar since. See [Manage bookings](/guides/manage-bookings).
+
+<Note>
+  The calendar you choose also decides the video link. Google Meet links need a
+  Google calendar here and Teams links an Outlook calendar. See [Meeting
+  locations](/guides/meeting-locations#video-providers).
+</Note>
