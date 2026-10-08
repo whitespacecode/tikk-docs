@@ -6,13 +6,6 @@ description: "Connect Google, Outlook or Apple iCloud. Your calendars are checke
 
 Tikk checks your connected calendars before showing a slot. A dentist appointment, a blocked focus hour, a meeting someone else put in your diary. Any of them removes that slot from your booking page. There's nothing to configure per event and nothing to remember. It's always on.
 
-<Frame>
-  <img
-    src="/images/availability-calendars.png"
-    alt="The Calendars tab under Availability, with the calendars checked for conflicts and the calendar bookings are added to"
-  />
-</Frame>
-
 ## Supported calendars
 
 <CardGroup cols={3}>
@@ -69,13 +62,14 @@ Each account under **Calendars to check for conflicts** shows how it's doing:
 
 | What you see             | Meaning                                                                                                                                              |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Checking … calendars** | Working normally. Click it to choose which of the account's calendars are checked.                                                                  |
-| **Paused**               | Connected but not checked. Free-plan connections beyond the first sit here. Click **Turn back on** to resume it.                                    |
+| **Checking … calendars** | Working normally. Click it to choose which of the account's calendars are checked.                                                                   |
+| **Paused**               | Connected but not checked. Free-plan connections beyond the first sit here. Click **Turn back on** to resume it.                                     |
 | **Reconnect**            | The provider revoked access, usually after a password change. Click **Reconnect**; until you do, events from this calendar aren't blocking anything. |
 
 <Warning>
   An expired connection is the one failure mode that can cause a double booking,
-  because Tikk can no longer see that calendar's events. Tikk flags it, so reconnect promptly.
+  because Tikk can no longer see that calendar's events. Tikk flags it, so
+  reconnect promptly.
 </Warning>
 
 To remove an account, click the **×** next to it.
@@ -96,13 +90,18 @@ Once connected, Tikk checks your calendars in real time whenever someone opens y
 
 When a booking is confirmed, Tikk adds an event with the meeting title, the booker and the meeting link to **one** calendar. Out of the box that's the main calendar of your first connected account. You can pick any other calendar you're allowed to add events to, from any connected account.
 
+<Frame>
+  <img
+    src="/images/availability-calendars.png"
+    alt="The Calendars tab under Availability, with the calendars checked for conflicts and the calendar bookings are added to"
+  />
+</Frame>
+
 <Steps>
   <Step title="Open your calendars">
     Click **Availability** in the sidebar, then the **Calendars** tab.
   </Step>
-  <Step title="Find the setting">
-    Scroll to **Calendar to add events to**.
-  </Step>
+  <Step title="Find the setting">Scroll to **Calendar to add events to**.</Step>
   <Step title="Open the dropdown">
     Click the calendar that's shown. Your calendars are listed per account, each
     with its colour.
