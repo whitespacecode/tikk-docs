@@ -4,6 +4,8 @@ sidebarTitle: "Calendar sync"
 description: "Connect Google, Outlook or Apple iCloud. Your calendars are checked before a slot is offered, and confirmed bookings land in the one calendar you choose."
 ---
 
+import { CalendarEventPreview } from "/snippets/calendar-event-preview.jsx";
+
 Tikk checks your connected calendars before showing a slot. A dentist appointment, a blocked focus hour, a meeting someone else put in your diary. Any of them removes that slot from your booking page. There's nothing to configure per event and nothing to remember. It's always on.
 
 ## Supported calendars
@@ -88,7 +90,13 @@ Once connected, Tikk checks your calendars in real time whenever someone opens y
 
 ## Choose the calendar bookings are added to
 
-When a booking is confirmed, Tikk adds an event with the meeting title, the booker and the meeting link to **one** calendar. Out of the box that's the main calendar of your first connected account. You can pick any other calendar you're allowed to add events to, from any connected account.
+When a booking is confirmed, Tikk adds an event to **one** calendar. Out of the box that's the main calendar of your first connected account. You can pick any other calendar you're allowed to add events to, from any connected account.
+
+The event is titled with the booker's name and the service, for example **Jane Doe: Intro call**, so you see who booked what without opening it. Open it and the description lists the booker's name and email, the note they left and the meeting link. A group session is titled with the service alone, because everyone in it shares one event.
+
+<CalendarEventPreview />
+
+The description is written in your [language](/guides/notifications#language). A Google Meet or Teams link sits on the event itself, so it isn't repeated in the description.
 
 <Frame>
   <img
@@ -127,7 +135,7 @@ A few things to know:
 - **The choice falls back on its own.** If you remove or pause the account your chosen calendar belongs to, new bookings go back to the main calendar of your first connected account.
 - **Your own events in that calendar.** Tikk's bookings always block their slots. For other events you put in that calendar to block slots too, switch it on under **Checking … calendars**.
 
-Reschedule or cancel the booking in Tikk and the calendar event is updated or removed in the calendar it was added to, even if you've chosen a different calendar since. See [Manage bookings](/guides/manage-bookings).
+Reschedule or cancel the booking in Tikk and the calendar event is updated or removed in the calendar it was added to, even if you've chosen a different calendar since. It doesn't work the other way round: moving or deleting the event in your calendar app leaves the booking as it was. That's why every event links back to Tikk. See [Manage bookings](/guides/manage-bookings).
 
 <Note>
   The calendar you choose also decides the video link. Google Meet links need a
