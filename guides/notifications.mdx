@@ -4,6 +4,8 @@ sidebarTitle: "Notifications"
 description: "Which emails Tikk sends to you and to the people who book you and which of them you can turn off."
 ---
 
+import { EmailPreview } from "/snippets/email-preview.jsx";
+
 Tikk emails both sides of a booking. You control which ones reach you; the ones your clients need are always sent.
 
 ## Your preferences
@@ -13,7 +15,7 @@ Go to **Settings → Notifications** to choose what you receive.
 | Setting                  | What it controls                                                    |
 | ------------------------ | ------------------------------------------------------------------- |
 | **New meeting requests** | An email when someone submits a request on your booking page.       |
-| **Booking updates**      | An email when a booking is confirmed, accepted or declined.         |
+| **Booking updates**      | An email when a booking is confirmed.                               |
 | **Meeting reminders**    | An email 24 hours before each scheduled meeting.                    |
 | **Setup reminders**      | Occasional nudges to finish your profile and set your availability. |
 | **Newsletter**           | Product updates, tips and news from Tikk.                           |
@@ -31,17 +33,13 @@ Go to **Settings → Notifications** to choose what you receive.
 
 ## What the person booking receives
 
-These aren't affected by your settings. They're the emails that make the booking work:
+These aren't affected by your settings. They're the emails that make the booking work: a confirmation with the meeting link, a payment link for a paid service you accepted, a note when you decline, reschedule or cancel and a reminder 24 hours before. After a payment, the booker also gets a receipt.
 
-| When                  | What they get                                          |
-| --------------------- | ------------------------------------------------------ |
-| Request accepted      | Confirmation with the time and the meeting link        |
-| Request declined      | A note that it didn't go ahead                         |
-| Paid booking accepted | A payment link to complete the booking                 |
-| Payment received      | A receipt                                              |
-| Booking rescheduled   | The new time                                           |
-| Booking cancelled     | A cancellation notice, including any message you wrote |
-| 24 hours before       | A reminder                                             |
+Here's what each email looks like, for the booker and for you:
+
+<EmailPreview initialAudience="booker" />
+
+On the Free plan, the booker's emails end with a small "Sent with tikk" line. On Pro it's gone.
 
 ## Reminders
 
@@ -55,4 +53,4 @@ The 24-hour reminder goes to **both** of you. Yours can be switched off under **
 
 ## Language
 
-Tikk speaks English, Dutch and French. Set yours under **Settings → Appearance → Language**; it applies to the app, the emails you receive and to the description of the events Tikk adds to your calendar.
+Tikk speaks English, Dutch and French. Set yours under **Settings → Appearance → Language**; it applies to the app, the emails you receive, the emails your bookers receive and the description of the events Tikk adds to your calendar.

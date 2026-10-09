@@ -4,6 +4,8 @@ sidebarTitle: "Public page"
 description: "One address, two ways to present it. Publish the booking page on its own or put a full website in front of it."
 ---
 
+import { BookingFlowPreview } from "/snippets/booking-flow-preview.jsx";
+
 Your public page lives at `tikk.chat/yourname`. It's the only part of Tikk a prospective client ever sees and you decide what it looks like when they get there.
 
 There are two ways to publish it. Both live at the same address, so switching between them never breaks a link you've already shared.
@@ -31,6 +33,12 @@ The website is something you put **in front** of it. Flip the switch on the Webs
   (`tikk.chat/yourname/discovery-call`) always go straight to the booking flow.
   The website advertises your services; it never wraps the booking engine.
 </Note>
+
+## The booking flow
+
+Whichever mode is live, booking works the same way. The visitor picks a service, then a day and a time, then leaves their name, email and what they want to talk about. Free services confirm on the spot. Paid ones go through checkout first, and with manual approval the visitor sends a request instead.
+
+<BookingFlowPreview />
 
 ## Your page isn't live until you claim a username
 

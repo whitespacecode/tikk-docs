@@ -4,6 +4,8 @@ sidebarTitle: "Webhooks"
 description: "Receive booking events as they happen: events, payload, signature verification, retries and URL rules. A Pro feature."
 ---
 
+import { BookingLifecycle } from "/snippets/booking-lifecycle.jsx";
+
 Webhooks send your booking updates to a URL as they happen, so you don't have to poll [`GET /bookings`](/api-reference/bookings/list-bookings). They're a Pro feature: deliveries go out while the Tikk account is on Pro.
 
 ## Set up a webhook
@@ -34,6 +36,10 @@ A credential only sees the webhooks it created. Webhooks created with an API key
   receive `booking.cancelled` for a booking you never saw confirmed. Group
   sessions send one event per booked seat.
 </Note>
+
+Move a booking along to see which event fires at each step:
+
+<BookingLifecycle events />
 
 ## Payload
 

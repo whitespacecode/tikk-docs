@@ -4,6 +4,8 @@ sidebarTitle: "Group bookings"
 description: "Let several people book the same slot. Set a seat cap, show remaining spots and charge per person."
 ---
 
+import { CalendarEventPreview } from "/snippets/calendar-event-preview.jsx";
+
 A group service lets several people book the same slot independently. Workshops, webinars, group coaching, classes: anywhere you want a room of people rather than a one-to-one call. Each attendee books on their own and Tikk keeps count of the seats.
 
 <Note>
@@ -48,6 +50,8 @@ Each slot shows as bookable until it's full. With remaining spots switched on, v
 Each attendee is a separate booking in your **Inbox**, so you can see who's coming and handle them individually. Cancelling one attendee frees that seat and leaves the session running for everyone else.
 
 Everyone gets the same meeting link, the same reminder 24 hours ahead and the same updates if you reschedule. In your calendar the session is a single event, titled with the service.
+
+<CalendarEventPreview initialVariant="group" />
 
 <Warning>
   Rescheduling a group session moves one booking at a time, not the whole room.

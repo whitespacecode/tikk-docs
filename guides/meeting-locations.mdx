@@ -4,6 +4,8 @@ sidebarTitle: "Meeting locations"
 description: "Choose where each service takes place, whether video, in person or somewhere else and control which video provider generates the link."
 ---
 
+import { EmailPreview } from "/snippets/email-preview.jsx";
+
 Every service has a location and it decides what the booker sees before the meeting and what lands in the calendar invite.
 
 ## Choose a location
@@ -58,6 +60,10 @@ The link is generated when a booking is **confirmed**, not when it's requested. 
   **payment link**, not the meeting link. The meeting link follows once the
   payment clears.
 </Warning>
+
+This is the email a booker gets when you accept a paid request. Its only button is **Complete Payment**:
+
+<EmailPreview email="paymentRequired" />
 
 ## Changing a location later
 

@@ -4,6 +4,9 @@ sidebarTitle: "Bookings"
 description: "What a booking holds, the statuses it moves through and the things that change it without you doing anything."
 ---
 
+import { BookingLifecycle } from "/snippets/booking-lifecycle.jsx";
+import { EmailPreview } from "/snippets/email-preview.jsx";
+
 A booking is one person's claim on one of your slots. Every booking arrives in your **Inbox**, carries the booker's details and the topic they wrote and moves through a small set of statuses from request to meeting.
 
 ## What a booking holds
@@ -14,14 +17,16 @@ You can also add **notes** to a booking. Notes are yours alone; the booker never
 
 ## Statuses
 
-| Status        | What it means                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| **Pending**   | The request is in, the slot is held, nothing is on your calendar yet. Waiting on you or on payment. |
-| **Accepted**  | Confirmed. The calendar event exists and both sides have the details.                               |
-| **Declined**  | You turned it down. The booker is emailed and the slot reopens.                                     |
-| **Cancelled** | Called off by you after it was accepted.                                                            |
+| Status        | What it means                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Pending**   | A request waiting for you to accept or decline. Nothing is on your calendar yet and the slot stays open to others until you accept.                    |
+| **Accepted**  | Confirmed. The calendar event exists and both sides have the details. A paid booking first shows as **Awaiting Payment**: the slot is held, the event follows payment. |
+| **Declined**  | You turned it down, or nobody answered before the slot time. The booker is emailed.                                                                    |
+| **Cancelled** | You called it off after it was accepted, or its payment failed or expired. The slot reopens.                                                           |
 
-While a paid booking is waiting on money, the Inbox shows it as **Awaiting payment** or **Payment failed** if the payment didn't go through. Both are pending bookings that haven't cleared their payment step.
+Try it: move a booking along and watch the badge it shows in your **Inbox** and the emails each step sends.
+
+<BookingLifecycle />
 
 <Info>
   Whether a booking stops at **Pending** at all is up to you. On the Free plan
@@ -40,6 +45,10 @@ A booking's payment is in one of five states: **none** for free meetings, **pend
   Sending someone the payment link when they asked how to join is a common
   mix-up.
 </Warning>
+
+When you accept a paid request, this is the email the booker gets. Until they pay, it's the only link they have:
+
+<EmailPreview email="paymentRequired" />
 
 ## What happens without you
 

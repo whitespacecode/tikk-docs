@@ -1,7 +1,7 @@
 // What a confirmed booking looks like in the host's own calendar. The text
 // mirrors tikk/lang/en/calendar_events.php — update both together.
-export const CalendarEventPreview = () => {
-  const [variant, setVariant] = useState("one");
+export const CalendarEventPreview = ({ initialVariant = "one" }) => {
+  const [variant, setVariant] = useState(initialVariant);
 
   // A date a few days out, so the example always reads as an upcoming booking.
   const date = useMemo(() => {

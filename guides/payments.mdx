@@ -4,6 +4,8 @@ sidebarTitle: "Payments"
 description: "Charge for any service with iDEAL, Bancontact or card. Payment is collected at booking, before the slot is confirmed."
 ---
 
+import { BookingLifecycle } from "/snippets/booking-lifecycle.jsx";
+
 Charge for any service and take the money at booking. The slot is only confirmed and written to both calendars once payment goes through, so you never have an unpaid meeting sitting on your calendar.
 
 ## Accepted payment methods
@@ -78,7 +80,9 @@ A few rules worth knowing:
 
 ## When payment fails
 
-If checkout is started but never completed, the booking sits as **Awaiting payment** and the slot is released. A declined payment shows as **Payment failed**. Either way you don't end up with a confirmed meeting that was never paid for.
+While checkout is open, the booking shows as **Awaiting Payment** in your Inbox and the slot is held for the booker. If the payment fails, expires or is abandoned, the booking is cancelled and the slot reopens. Nobody is emailed. Either way you don't end up with a confirmed meeting that was never paid for.
+
+<BookingLifecycle initialPaid />
 
 The calendar event and the meeting link are only issued after the payment is captured. Never before.
 

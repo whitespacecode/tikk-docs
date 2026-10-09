@@ -4,6 +4,8 @@ sidebarTitle: "Manual approval"
 description: "Review each request before it reaches your calendar. See who's asking and why, before you commit the time."
 ---
 
+import { BookingLifecycle } from "/snippets/booking-lifecycle.jsx";
+
 With manual approval on, booking requests wait in your Inbox instead of confirming themselves. You see the booker's name, email and topic before anything reaches your calendar and nothing is confirmed until you accept.
 
 <Note>
@@ -24,8 +26,9 @@ There are two levels and the more specific one wins.
 
 <Steps>
   <Step title="Someone requests a time">
-    They pick a slot and fill in their details. The slot is held. Nothing is on
-    your calendar and, for paid services, nothing has been charged.
+    They pick a slot and fill in their details. Nothing is on your calendar
+    and, for paid services, nothing has been charged. The slot stays open to
+    others until you accept, so answer promptly.
   </Step>
   <Step title="The request sits as pending">
     You get an email and it appears in your Inbox with their name, email and
@@ -34,11 +37,9 @@ There are two levels and the more specific one wins.
   <Step title="You accept or decline">Open the request and decide.</Step>
 </Steps>
 
-What follows depends on the service:
+What follows depends on the service. Try both a free and a paid one:
 
-- **Free service, accepted.** Confirmed immediately. The calendar event is created and you both get the meeting details.
-- **Paid service, accepted.** Tikk emails the booker a payment link. The booking is confirmed once they pay, so an accepted paid request isn't a confirmed meeting until the money is in.
-- **Declined.** The booker is emailed and the slot reopens. Nothing was charged, so there's nothing to refund.
+<BookingLifecycle initialManual />
 
 <Warning>
   Requests don't wait forever. A pending request whose slot time has passed is
