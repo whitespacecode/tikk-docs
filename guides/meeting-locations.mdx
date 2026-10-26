@@ -1,10 +1,11 @@
 ---
 title: "Meeting locations and links"
 sidebarTitle: "Meeting locations"
-description: "Choose where each service takes place, whether video, in person or somewhere else and control which video provider generates the link."
+description: "Choose where each service takes place, whether video, in person or somewhere else, and which video tool or room each service uses."
 ---
 
 import { EmailPreview } from "/snippets/email-preview.jsx";
+import { VideoRoomPreview } from "/snippets/video-room-preview.jsx";
 
 Every service has a location and it decides what the booker sees before the meeting and what lands in the calendar invite.
 
@@ -14,7 +15,7 @@ Set it per service, under **Services → your service → Advanced → Booking L
 
 | Location              | What happens                                                                                |
 | --------------------- | ------------------------------------------------------------------------------------------- |
-| **Video Meeting**     | Tikk generates a unique video link for every booking and puts it in both calendar invites.  |
+| **Video Meeting**     | The booking gets a video link (a new one, or your own room) in both calendar invites.       |
 | **In-Person Meeting** | You enter an address. It goes on the booking and into the calendar event.                   |
 | **No Location**       | Nothing is attached. Use it when you'll arrange the details yourself or when you call them. |
 
@@ -30,18 +31,70 @@ If a service has no location of its own, Tikk falls back to the default location
 
 ## Video providers
 
-For video meetings, pick which service generates the link under **Settings → Profile → Conferencing**:
+Video tools come in two kinds:
 
-| Setting             | What you get                                                                                                                                  |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Auto**            | Follows the calendar bookings are added to: Google Meet for a Google calendar, Teams for an Outlook calendar or Jitsi otherwise. The default. |
-| **Google Meet**     | A Meet link. Requires bookings to be added to a Google calendar.                                                                              |
-| **Microsoft Teams** | A Teams link. Requires bookings to be added to an Outlook calendar.                                                                           |
-| **Jitsi**           | A Jitsi room. Needs no connected account at all.                                                                                              |
+| Kind                     | Tools                                         | What the booker gets                                                  |
+| ------------------------ | --------------------------------------------- | --------------------------------------------------------------------- |
+| **New room per booking** | Google Meet, Microsoft Teams, Jitsi           | A fresh link for every booking, created by Tikk.                      |
+| **Your own room**        | Whereby, Proton Meet, Zoom, Jitsi on your own server | The room link you paste in. Every booking that uses it joins the same room. |
+
+<VideoRoomPreview />
+
+You set a default for all your services, then change it for the services that should use something else.
+
+### Your default video tool
+
+Pick it under **Settings → Profile → Conferencing**:
+
+| Setting              | What you get                                                                                                                                  |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Auto**             | Follows the calendar bookings are added to: Google Meet for a Google calendar, Teams for an Outlook calendar or Jitsi otherwise. The default. |
+| **Google Meet**      | A Meet link. Requires bookings to be added to a Google calendar.                                                                              |
+| **Microsoft Teams**  | A Teams link. Requires bookings to be added to an Outlook calendar.                                                                           |
+| **Jitsi**            | A Jitsi room. Needs no connected account at all.                                                                                              |
+| **Own meeting link** | Pick Whereby, Proton Meet, Zoom or Jitsi and paste your room. Every video booking gets that one room.                                        |
 
 Google Meet and Teams links are created together with the calendar event, which is why they depend on the calendar you picked under **Availability → Calendars → Calendar to add events to**. See [Calendar sync](/guides/calendar-sync#choose-the-calendar-bookings-are-added-to).
 
-Every booking gets its own link. Nothing is a shared, permanent room. The link in the booker's invite is always the same one as on the event in your calendar.
+### A different tool or room per service
+
+Each service can use its own tool. There are two places to set it.
+
+**From the service.** Go to **Services → your service → Advanced → Booking Location**, choose **Video Meeting** and pick a **Video tool**. **Default** follows your setting above. For Whereby, Proton Meet, Zoom or your own Jitsi server, paste the room link too.
+
+**From Apps.** To give several services the same tool at once, open **Apps**, pick the tool and click **Install** (or **Edit services** if it's already in use):
+
+<Steps>
+  <Step title="Enter a default room">
+    Paste your room link. Every service you tick uses it, unless you give one
+    its own room.
+  </Step>
+  <Step title="Pick the services">
+    Tick the services that should meet in this tool. Each one shows what it
+    uses now and what it will switch to.
+  </Step>
+  <Step title="Give a service its own room (optional)">
+    Click **Use a different room** under a ticked service and paste its link.
+    **Use default** puts it back on the default room.
+  </Step>
+  <Step title="Save">
+    The bar at the bottom counts the services and rooms before you save, for
+    example "2 services will use Whereby · 2 rooms".
+  </Step>
+</Steps>
+
+A service you untick goes back to your default video tool. A service that was in person or had no location becomes a video meeting when you tick it.
+
+<Tip>
+  Give a service its own room when you want to keep clients apart, for
+  example a free intro call in one room and paid coaching in another. Turn on a
+  waiting room or "knock to enter" in your video tool, so a booker who arrives
+  early doesn't walk in on the previous meeting.
+</Tip>
+
+Room links must start with `https://` and belong to the tool you picked: a Whereby room on `whereby.com`, a Zoom room on `zoom.us` or `zoom.com`, a Proton Meet room on `proton.me`. A Jitsi room can be on any server.
+
+With a new-room tool, every booking gets its own link. With your own room, every booking for that service shares the room you set. Either way, the link in the booker's invite is the same one as on the event in your calendar.
 
 <Note>
   If your chosen provider can't produce a link (say you picked Google Meet but

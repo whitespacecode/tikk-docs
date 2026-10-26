@@ -23,7 +23,7 @@ Use the words the app uses. The database and the UI disagree in places; the UI w
 | Booker, attendee | Requester, sender                 |
 | Personal invite  | Private link, invite-only service |
 
-Nav paths, when you cite them, must match the real sidebar: **Inbox · Calendar · Website · Services · Availability · Earnings**, with **Settings** and **Billing** in the account menu. Calendar connections live under **Availability → Calendars**.
+Nav paths, when you cite them, must match the real sidebar: **Inbox · Calendar · Website · Services · Availability · Apps · Earnings**, with **Settings** and **Billing** in the account menu. Calendar connections live under **Availability → Calendars**.
 
 ## Style preferences
 
