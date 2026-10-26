@@ -5,19 +5,24 @@ description: "Choose where each service takes place, whether video, in person or
 ---
 
 import { EmailPreview } from "/snippets/email-preview.jsx";
+import { LocationPickerPreview } from "/snippets/location-picker-preview.jsx";
 import { VideoRoomPreview } from "/snippets/video-room-preview.jsx";
 
 Every service has a location and it decides what the booker sees before the meeting and what lands in the calendar invite.
 
 ## Choose a location
 
-Set it per service, under **Services → your service → Advanced → Booking Location**. Three options:
+Set it per service, under **Services → your service → Advanced → Booking Location**. It's one dropdown with three groups:
 
-| Location              | What happens                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| **Video Meeting**     | The booking gets a video link (a new one, or your own room) in both calendar invites.       |
-| **In-Person Meeting** | You enter an address. It goes on the booking and into the calendar event.                   |
-| **No Location**       | Nothing is attached. Use it when you'll arrange the details yourself or when you call them. |
+| Group            | What happens                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Conferencing** | Pick a video tool. The booking gets its link (a new one, or your own room) in both calendar invites.          |
+| **In person**    | Pick **In-Person Meeting** and enter an address. It goes on the booking and into the calendar event.          |
+| **Other**        | Pick **No Location** and nothing is attached. Use it when you'll arrange the details yourself or call them.   |
+
+Try it: switch the setup to see which video tools show up, and click an option to see what appears under the dropdown.
+
+<LocationPickerPreview />
 
 For in-person meetings you can also decide whether the address is **shown publicly** on your booking page or only revealed to people who've actually booked.
 
@@ -60,18 +65,30 @@ Google Meet and Teams links are created together with the calendar event, which 
 
 Each service can use its own tool. There are two places to set it.
 
-**From the service.** Go to **Services → your service → Advanced → Booking Location**, choose **Video Meeting** and pick a **Video tool**. **Default** follows your setting above. For Whereby, Proton Meet, Zoom or your own Jitsi server, paste the room link too.
+**From the service.** Open **Services → your service → Advanced → Booking Location** and pick a tool under **Conferencing**. The list only shows the tools that work for you:
 
-**From Apps.** To give several services the same tool at once, open **Apps**, pick the tool and click **Install** (or **Edit services** if it's already in use):
+| Tool                                       | Listed when                                                     |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| **Jitsi**                                  | Always. It needs no account.                                     |
+| **Google Meet**                            | Bookings are added to a Google calendar.                        |
+| **Microsoft Teams**                        | Bookings are added to an Outlook calendar.                      |
+| **Whereby, Proton Meet, Zoom, your Jitsi** | You installed it from **Apps** (see below).                     |
+
+The tool marked **(default)** is the one your default video tool gives you right now. Pick it and the service follows your default, so changing the default later changes this service too. Pick any other tool and the service keeps it.
+
+When you pick an app with your own room, its **Room link** is filled in with the room you installed it with. Change the link to give this service a room of its own.
+
+**From Apps.** Whereby, Proton Meet, Zoom and your own Jitsi server need installing first. Open **Apps**, pick the tool and click **Install**:
 
 <Steps>
   <Step title="Enter a default room">
     Paste your room link. Every service you tick uses it, unless you give one
     its own room.
   </Step>
-  <Step title="Pick the services">
+  <Step title="Pick the services (optional)">
     Tick the services that should meet in this tool. Each one shows what it
-    uses now and what it will switch to.
+    uses now and what it will switch to. You can also tick none and pick the
+    tool per service later.
   </Step>
   <Step title="Give a service its own room (optional)">
     Click **Use a different room** under a ticked service and paste its link.
@@ -83,7 +100,9 @@ Each service can use its own tool. There are two places to set it.
   </Step>
 </Steps>
 
-A service you untick goes back to your default video tool. A service that was in person or had no location becomes a video meeting when you tick it.
+A service that was in person or had no location becomes a video meeting when you tick it.
+
+An installed app stays installed, even when no service uses it anymore, so it's always in the dropdown. To remove it, open it under **Apps** and click **Disconnect**. Services that used it go back to your default video tool, and if it was your default, your default goes back to **Auto**.
 
 <Tip>
   Give a service its own room when you want to keep clients apart, for
