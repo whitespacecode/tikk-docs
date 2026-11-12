@@ -1,0 +1,101 @@
+---
+title: "Booker notifications and emails"
+sidebarTitle: "Booker notifications and emails"
+description: "Per service, choose whether bookers can reschedule or cancel themselves, switch the booker reminder off and reword the emails they get."
+---
+
+Every service has its own **Notifications** section. Open the service under **Services** and pick **Notifications** in its sidebar. It shows the emails your bookers get, in the order a booking lives through them. You can also choose what bookers may change themselves.
+
+| Stage                             | Email            | Sent                                       |
+| --------------------------------- | ---------------- | ------------------------------------------ |
+| **When someone books**            | **Confirmation** | Once the booking is confirmed              |
+| **When you review a request**     | **Decline**      | When you decline a request                 |
+| **Reminder before the booking**   | **Reminder**     | 24 hours before the meeting                |
+| **If the booking is rescheduled** | **New time**     | When you move the booking to another time  |
+| **If the booking is cancelled**   | **Cancellation** | When you cancel the booking                |
+
+Click a stage to open it, then click its email to edit it. A stage with a dashed outline doesn't send anything at the moment, or is closed to bookers.
+
+## Let bookers reschedule or cancel
+
+By default, bookers can move or cancel a booking themselves, up to 24 hours before it starts. The confirmation, the reminder and the new-time email end with a **Reschedule · Cancel** line. Bookers pick a new time from this service's availability, or cancel with an optional message.
+
+Use the switches on the **If the booking is rescheduled** and **If the booking is cancelled** stages to turn either one off. When at least one is on, the open stage shows how late a booker can still make the change: until the start, or 1, 12, 24 or 48 hours before it.
+
+<Warning>
+  The switches apply straight away, including to the links in emails your
+  bookers already have. Tikk asks you to confirm before turning one off.
+</Warning>
+
+A booker can't always make a change, even with it switched on:
+
+- **Paid bookings** can be rescheduled, but not cancelled. There's no refund flow yet, so the booker asks you instead.
+- **Group services** can't be changed by bookers at all, because everyone shares one session.
+- **Past the cutoff**, the booking page tells the booker it's too late to change online and that the meeting is still on.
+
+When a booker changes a booking, your calendar is updated and the old slot opens up again. The booker gets a short confirmation of what they did. Your own reworded new-time or cancellation email isn't used, since it's written as your change. You get an email about it too, unless you've switched off **Booking updates** under **Settings → Notifications**.
+
+<Note>
+  Turning a switch off only stops bookers. You can still reschedule and cancel
+  from your **Inbox**, and the booker still gets the new-time or cancellation
+  email. See [Manage bookings](/guides/manage-bookings).
+</Note>
+
+## Switch off the booker reminder
+
+The switch on **Reminder before the booking** stops the 24-hour reminder to bookers of this service. It's available on every plan. Your own reminder is a separate setting under **Settings → Notifications**. See [Notifications](/guides/notifications).
+
+## Reword the emails
+
+<Note>
+  Rewording emails is a **Pro feature**. On the Free plan you can open each
+  email and see the wording your bookers get, but not change it.
+</Note>
+
+Each email has a **Subject** and a **Message**. The message is your opening text. Tikk adds the rest below it: the date and time, the meeting link or location, the reschedule and cancel links and your name. Whatever you write, the booking details are always there and can't be broken.
+
+<Steps>
+  <Step title="Open the email">
+    Open its stage and click the email.
+  </Step>
+  <Step title="Write your text">
+    Change the subject and the message. Use **Insert** to add a placeholder
+    where your cursor is. A blank line starts a new paragraph.
+  </Step>
+  <Step title="Check the preview">
+    The preview fills in a sample booking as you type. On a wide screen it sits
+    beside the editor, with a desktop and a phone width.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The email shows **Customised** in the list.
+  </Step>
+</Steps>
+
+Placeholders are filled in from each booking when the email goes out:
+
+| Placeholder    | Becomes                                      |
+| -------------- | -------------------------------------------- |
+| `{first_name}` | The booker's first name                      |
+| `{name}`       | The booker's full name                       |
+| `{service}`    | The service title                            |
+| `{date}`       | The meeting date, on the booker's clock      |
+| `{time}`       | The meeting time, on the booker's clock      |
+| `{duration}`   | The length, such as "30 min"                 |
+| `{host}`       | Your name                                    |
+| `{location}`   | The address, or "Online" for a video meeting |
+
+Anything else in curly braces is sent exactly as you typed it.
+
+To go back to Tikk's wording, click **Reset to default**. Leaving a field empty does the same for just that field.
+
+<Tip>
+  Tikk's default wording follows your language under **Settings → Appearance →
+  Language**. Your own text is sent as you wrote it, so write it in the
+  language your bookers read.
+</Tip>
+
+### Good to know
+
+- **The decline email** only goes out for requests you review yourself, so it matters once [manual approval](/guides/manual-approval) is on.
+- **Duplicating a service** copies its wording. So does a [personal invite](/guides/personal-invites) made from a service.
+- **If Pro ends**, bookers get Tikk's default wording again. Your text is kept and comes back when you upgrade.

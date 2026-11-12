@@ -1,8 +1,9 @@
 // A booking in your Inbox that you move along by hand: the badge it shows and
 // the emails each step sends. Mirrors tikk/app/Services/BookingService.php,
 // MolliePaymentService.php, RequestController.php (update, reschedule, cancel),
-// AutoDeclineExpiredRequests.php, the row and badges in RequestRow.vue and the
-// subjects in lang/en/mail.php. Webhook names come from
+// BookingChangeService.php (the booker's own changes), AutoDeclineExpiredRequests.php,
+// the row and badges in RequestRow.vue and the subjects in lang/en/mail.php (the
+// booker emails' default subjects are under `templates`). Webhook names come from
 // app/Support/WebhookEvents.php. Update both together.
 export const BookingLifecycle = ({
   initialPaid = false,
@@ -32,23 +33,30 @@ export const BookingLifecycle = ({
     cancelled: "Slot open again",
   };
 
-  // The topic is what the booker typed in Additional Notes, not the service.
+  // The topic is what the booker typed when booking. Your emails use it in the
+  // subject; Jane's use the service.
   const topic = "I'd like to talk about pricing.";
+  const service = "Intro call";
 
   const mail = {
     newRequest: { to: "You", subject: "New Meeting Request from Jane Doe" },
-    confirmed: { to: "Jane", subject: "Request Accepted: Meeting confirmed with Sam" },
+    confirmed: { to: "Jane", subject: "Confirmed: " + service + " with Sam" },
     booked: { to: "You", subject: "New Meeting Booked: " + topic },
-    declined: { to: "Jane", subject: "Meeting Request Update from Sam" },
+    declined: { to: "Jane", subject: "About your " + service + " request" },
     paymentRequired: {
       to: "Jane",
       subject: "Action Required: Complete Payment for Your Meeting with Sam",
     },
     receiptHost: { to: "You", subject: "Payment Received: €60,00 from \"Jane Doe\"" },
     receiptBooker: { to: "Jane", subject: "Payment Confirmation: €… for \"" + topic + "\"" },
-    rescheduled: { to: "Jane", subject: "Meeting Rescheduled: " + topic },
-    cancelled: { to: "Jane", subject: "Meeting Cancelled: " + topic },
-    reminder: { to: "Both", subject: "Reminder: Meeting Tomorrow — " + topic },
+    rescheduled: { to: "Jane", subject: "New time for your " + service },
+    cancelled: { to: "Jane", subject: "Cancelled: " + service },
+    reminderBooker: { to: "Jane", subject: "Reminder: " + service + " tomorrow at 10:00" },
+    reminderHost: { to: "You", subject: "Reminder: Meeting Tomorrow — " + topic },
+    movedByBooker: { to: "Jane", subject: "Moved: " + service + " with Sam" },
+    rescheduledByBooker: { to: "You", subject: "Booking rescheduled by Jane Doe: " + topic },
+    cancelledByBooker: { to: "Jane", subject: "Cancelled: " + service },
+    hostToldOfCancel: { to: "You", subject: "Booking cancelled by Jane Doe: " + topic },
   };
 
   const confirm = paid
@@ -75,12 +83,18 @@ export const BookingLifecycle = ({
       { label: "Jane pays", to: "accepted", mails: confirm, event: "booking.confirmed" },
       { label: "Payment fails", to: "cancelled", mails: [], event: "booking.cancelled" },
     ],
+    // A paid booking can be moved but not cancelled, by you or by Jane. A move
+    // means a fresh reminder for the new time.
     accepted: [
-      !reminded && { label: "A day before", to: "accepted", mails: [mail.reminder], reminder: true },
-      { label: "You reschedule", to: "accepted", mails: [mail.rescheduled], event: "booking.rescheduled" },
+      !reminded && { label: "A day before", to: "accepted", mails: [mail.reminderBooker, mail.reminderHost], reminder: true },
+      { label: "You reschedule", to: "accepted", mails: [mail.rescheduled], event: "booking.rescheduled", moved: true },
       paid
         ? null
         : { label: "You cancel", to: "cancelled", mails: [mail.cancelled], event: "booking.cancelled" },
+      { label: "Jane reschedules", to: "accepted", mails: [mail.movedByBooker, mail.rescheduledByBooker], event: "booking.rescheduled", moved: true },
+      paid
+        ? null
+        : { label: "Jane cancels", to: "cancelled", mails: [mail.cancelledByBooker, mail.hostToldOfCancel], event: "booking.cancelled" },
     ].filter(Boolean),
   };
 
@@ -91,6 +105,9 @@ export const BookingLifecycle = ({
     setLog(log.concat([action]));
     if (action.reminder) {
       setReminded(true);
+    }
+    if (action.moved) {
+      setReminded(false);
     }
   };
 

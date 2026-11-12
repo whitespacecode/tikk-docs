@@ -63,7 +63,8 @@
               "guides/group-bookings",
               "guides/personal-invites",
               "guides/payments",
-              "guides/notifications"
+              "guides/notifications",
+              "guides/booker-emails"
             ]
           },
           {

@@ -1,12 +1,12 @@
 ---
 title: "Emails and notifications"
 sidebarTitle: "Notifications"
-description: "Which emails Tikk sends to you and to the people who book you and which of them you can turn off."
+description: "Which emails Tikk sends to you and to the people who book you, which of them you can turn off and how to reword your bookers' emails."
 ---
 
 import { EmailPreview } from "/snippets/email-preview.jsx";
 
-Tikk emails both sides of a booking. You control which ones reach you; the ones your clients need are always sent.
+Tikk emails both sides of a booking. Your account settings decide which emails reach you. Each service decides what its bookers get.
 
 ## Your preferences
 
@@ -33,17 +33,19 @@ Go to **Settings → Notifications** to choose what you receive.
 
 ## What the person booking receives
 
-These aren't affected by your settings. They're the emails that make the booking work: a confirmation with the meeting link, a payment link for a paid service you accepted, a note when you decline, reschedule or cancel and a reminder 24 hours before. After a payment, the booker also gets a receipt.
+These are the emails that make the booking work: a confirmation with the meeting link, a payment link for a paid service you accepted, a note when you decline, reschedule or cancel and a reminder 24 hours before. After a payment, the booker also gets a receipt.
+
+Your account settings don't touch them. Each service has its own **Notifications** section instead, where you can switch off the booker reminder and, on Pro, reword the confirmation, reminder, new-time, cancellation and decline emails. See [Booker notifications and emails](/guides/booker-emails).
 
 Here's what each email looks like, for the booker and for you:
 
 <EmailPreview initialAudience="booker" />
 
-On the Free plan, the booker's emails end with a small "Sent with tikk" line. On Pro it's gone.
+On the Free plan, the booker's emails carry the Tikk logo and a "Made with tikk" band at the bottom. On Pro, switch on **Hide Tikk branding** and they show your name instead, in the colour of your booking page, without the band.
 
 ## Reminders
 
-The 24-hour reminder goes to **both** of you. Yours can be switched off under **Meeting reminders**; the attendee's is always sent.
+The 24-hour reminder goes to **both** of you. Yours can be switched off under **Meeting reminders**. The booker's can be switched off per service, under the service's **Notifications**.
 
 <Tip>
   The reminder is the single biggest lever on no-shows. If you're tempted to
